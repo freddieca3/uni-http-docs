@@ -49,8 +49,16 @@ if ($stmt->num_rows > 0) {
         $comments = json_decode($comments_json, true);
         echo "<div class='comments' id='comments-" . htmlspecialchars($post_id) . "'>";
         if ($comments) {
-            foreach ($comments as $comment) {
+            foreach (array_slice($comments, 0, 3) as $comment) {
                 echo "<p><strong>" . htmlspecialchars($comment['username']) . ":</strong> " . htmlspecialchars($comment['comment']) . " <small>(" . htmlspecialchars($comment['created_at']) . ")</small></p>";
+            }
+            if (count($comments) > 3) {
+                echo "<button onclick='toggleComments(" . htmlspecialchars($post_id) . ")' id='toggle-button-" . htmlspecialchars($post_id) . "'>View More Comments</button>";
+                echo "<div id='more-comments-" . htmlspecialchars($post_id) . "' style='display: none;'>";
+                foreach (array_slice($comments, 3) as $comment) {
+                    echo "<p><strong>" . htmlspecialchars($comment['username']) . ":</strong> " . htmlspecialchars($comment['comment']) . " <small>(" . htmlspecialchars($comment['created_at']) . ")</small></p>";
+                }
+                echo "</div>";
             }
         }
         echo "</div>";
@@ -105,5 +113,17 @@ function addComment(event, postId) {
         }
     };
     xhr.send("post_id=" + postId + "&comment=" + encodeURIComponent(comment));
+}
+
+function toggleComments(postId) {
+    var moreComments = document.getElementById("more-comments-" + postId);
+    var toggleButton = document.getElementById("toggle-button-" + postId);
+    if (moreComments.style.display === "none") {
+        moreComments.style.display = "block";
+        toggleButton.innerText = "View Less Comments";
+    } else {
+        moreComments.style.display = "none";
+        toggleButton.innerText = "View More Comments";
+    }
 }
 </script>
