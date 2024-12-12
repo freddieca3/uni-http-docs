@@ -42,7 +42,7 @@ if ($stmt->num_rows > 0) {
         echo "<p><small>Posted on: " . htmlspecialchars($created_at) . "</small></p>";
 
         // Like button
-        echo "<button onclick='likePost(" . htmlspecialchars($post_id) . ")'>&#x2764;</button>";
+        echo "<button class='like-button' onclick='likePost(" . htmlspecialchars($post_id) . ")'>&#x2764;</button>";
         echo "<span id='like-count-" . htmlspecialchars($post_id) . "'>" . htmlspecialchars($likes) . "</span> Likes";
 
         // Comment section
@@ -135,9 +135,21 @@ function toggleComments(postId) {
     cursor: pointer;
     padding: 0;
     font-size: 1em;
-    text-decoration: underline;
+    text-decoration: none;
 }
 .toggle-button:hover {
     color: #004080;
+}
+
+.like-button {
+    background: none;
+    border: none;
+    color: red;
+    cursor: pointer;
+    padding: 0;
+    font-size: 1.5em;
+}
+.like-button:hover {
+    color: darkred;
 }
 </style>
