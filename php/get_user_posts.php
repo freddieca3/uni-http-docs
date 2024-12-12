@@ -97,11 +97,8 @@ function addComment(event, postId) {
         if (xhr.status === 200) {
             var response = JSON.parse(xhr.responseText);
             if (response.success) {
-                var commentsDiv = document.getElementById("comments-" + postId);
-                var newComment = document.createElement("p");
-                newComment.innerHTML = "<strong>" + response.username + ":</strong> " + response.comment + " <small>(" + new Date().toLocaleString() + ")</small>";
-                commentsDiv.appendChild(newComment);
-                commentInput.value = "";
+                alert("Comment posted");
+                location.reload();
             } else {
                 alert("Failed to add comment: " + response.message);
             }
