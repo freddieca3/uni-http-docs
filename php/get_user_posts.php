@@ -53,7 +53,7 @@ if ($stmt->num_rows > 0) {
                 echo "<p><strong>" . htmlspecialchars($comment['username']) . ":</strong> " . htmlspecialchars($comment['comment']) . " <small>(" . htmlspecialchars($comment['created_at']) . ")</small></p>";
             }
             if (count($comments) > 3) {
-                echo "<button onclick='toggleComments(" . htmlspecialchars($post_id) . ")' id='toggle-button-" . htmlspecialchars($post_id) . "'>View More Comments</button>";
+                echo "<button onclick='toggleComments(" . htmlspecialchars($post_id) . ")' id='toggle-button-" . htmlspecialchars($post_id) . "'>View More &#x25BC;</button>";
                 echo "<div id='more-comments-" . htmlspecialchars($post_id) . "' style='display: none;'>";
                 foreach (array_slice($comments, 3) as $comment) {
                     echo "<p><strong>" . htmlspecialchars($comment['username']) . ":</strong> " . htmlspecialchars($comment['comment']) . " <small>(" . htmlspecialchars($comment['created_at']) . ")</small></p>";
@@ -120,10 +120,10 @@ function toggleComments(postId) {
     var toggleButton = document.getElementById("toggle-button-" + postId);
     if (moreComments.style.display === "none") {
         moreComments.style.display = "block";
-        toggleButton.innerText = "View Less Comments";
+        toggleButton.innerHTML = "View Less &#x25B2;";
     } else {
         moreComments.style.display = "none";
-        toggleButton.innerText = "View More Comments";
+        toggleButton.innerHTML = "View More &#x25BC;";
     }
 }
 </script>
