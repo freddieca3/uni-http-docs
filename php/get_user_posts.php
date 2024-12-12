@@ -53,7 +53,7 @@ if ($stmt->num_rows > 0) {
                 echo "<p><strong>" . htmlspecialchars($comment['username']) . ":</strong> " . htmlspecialchars($comment['comment']) . " <small>(" . htmlspecialchars($comment['created_at']) . ")</small></p>";
             }
             if (count($comments) > 3) {
-                echo "<button onclick='toggleComments(" . htmlspecialchars($post_id) . ")' id='toggle-button-" . htmlspecialchars($post_id) . "'>View More &#x25BC;</button>";
+                echo "<button class='toggle-button' onclick='toggleComments(" . htmlspecialchars($post_id) . ")' id='toggle-button-" . htmlspecialchars($post_id) . "'>View More &#x25BC;</button>";
                 echo "<div id='more-comments-" . htmlspecialchars($post_id) . "' style='display: none;'>";
                 foreach (array_slice($comments, 3) as $comment) {
                     echo "<p><strong>" . htmlspecialchars($comment['username']) . ":</strong> " . htmlspecialchars($comment['comment']) . " <small>(" . htmlspecialchars($comment['created_at']) . ")</small></p>";
@@ -127,3 +127,17 @@ function toggleComments(postId) {
     }
 }
 </script>
+<style>
+.toggle-button {
+    background: none;
+    border: none;
+    color: #005f99;
+    cursor: pointer;
+    padding: 0;
+    font-size: 1em;
+    text-decoration: underline;
+}
+.toggle-button:hover {
+    color: #004080;
+}
+</style>
