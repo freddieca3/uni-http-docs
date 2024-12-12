@@ -101,7 +101,7 @@ main {
     padding-top: 20px;
     /* Adjusted for fixed navbar */
     padding: 20px;
-    background-color: #fff;
+    background-color: #f0f0f0; /* Light grey background */
     color: #333;
     min-height: 90vh;
 }
