@@ -114,8 +114,24 @@ footer {
     color: white;
 }
 
+/* Post Styles */
+.post {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px auto; /* Center the post container */
+    background-color: #fff;
+    max-width: 600px; /* Set a maximum width for the post container */
+}
+
+/* Center the image within the post */
+.post img {
+    display: block;
+    margin: 0 auto;
+}
+
 /* Like Button Styles */
-button {
+.like-button {
     background-color: red; /* Change background color to red */
     color: white;
     cursor: pointer;
@@ -124,6 +140,6 @@ button {
     padding: 10px 20px; /* Add padding for better appearance */
 }
 
-button:hover {
+.like-button:hover {
     background-color: darkred; /* Change hover color to a darker red */
 }
