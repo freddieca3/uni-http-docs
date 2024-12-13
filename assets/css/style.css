@@ -104,17 +104,6 @@ main {
     background-color: #fff;
     color: #333;
     min-height: 90vh;
-    display: flex;
-    justify-content: center;
-}
-
-.feed-container {
-    max-width: 600px;
-    width: 100%;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Footer */
@@ -123,20 +112,4 @@ footer {
     padding: 20px;
     background-color: #333;
     color: white;
-}
-
-/* Post Styles */
-.post {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
-    background-color: #fff;
-}
-
-.post img {
-    display: block;
-    margin: 0 auto;
-    max-width: 100%;
-    height: auto;
 }
