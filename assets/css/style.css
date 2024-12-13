@@ -129,17 +129,15 @@ footer {
     display: block;
     margin: 0 auto;
 }
-
 /* Like Button Styles */
-.like-button {
-    background-color: red; /* Change background color to red */
-    color: white;
+.post button[onclick^='likePost'] {
+    background: none;
+    color: red;
+    border: none;
     cursor: pointer;
-    display: inline-block; /* Ensure buttons are only as wide as their content */
-    width: auto; /* Override the width to auto */
-    padding: 10px 20px; /* Add padding for better appearance */
+    font-size: 1em;
 }
 
-.like-button:hover {
-    background-color: darkred; /* Change hover color to a darker red */
+.post button[onclick^='likePost']:hover {
+    color: darkred;
 }
