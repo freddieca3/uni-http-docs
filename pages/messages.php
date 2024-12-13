@@ -32,41 +32,42 @@ session_start();
     </footer>
     <script>
         function loadMessages(conversationId) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "../php/get_messages.php?conversation_id=" + conversationId, true);
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    document.getElementById("chat-window").innerHTML = xhr.responseText;
-                    document.getElementById("message-form").style.display = "block";
-                    document.getElementById("chat-window").setAttribute("data-conversation-id", conversationId);
-                }
-            };
-            xhr.send();
+            const messages = JSON.parse(localStorage.getItem('conversation_' + conversationId)) || [];
+            const chatWindow = document.getElementById("chat-window");
+            chatWindow.innerHTML = messages.map(msg => `<p><strong>${msg.sender}:</strong> ${msg.message} <small>(${msg.created_at})</small></p>`).join('');
+            document.getElementById("message-form").style.display = "block";
+            chatWindow.setAttribute("data-conversation-id", conversationId);
         }
 
         document.getElementById("message-form").addEventListener("submit", function (e) {
             e.preventDefault();
-            var message = document.getElementById("message-input").value;
-            var conversationId = document.getElementById("chat-window").getAttribute("data-conversation-id");
+            const message = document.getElementById("message-input").value;
+            const conversationId = document.getElementById("chat-window").getAttribute("data-conversation-id");
+            const messages = JSON.parse(localStorage.getItem('conversation_' + conversationId)) || [];
+            const newMessage = {
+                sender: 'You',
+                message: message,
+                created_at: new Date().toISOString()
+            };
+            messages.push(newMessage);
+            localStorage.setItem('conversation_' + conversationId, JSON.stringify(messages));
+            loadMessages(conversationId);
+            document.getElementById("message-input").value = "";
+
+            // Send the message to the server
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "../php/send_message.php", true);
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             xhr.onload = function () {
-                if (xhr.status === 200) {
-                    var response = JSON.parse(xhr.responseText);
-                    if (response.success) {
-                        loadMessages(conversationId);
-                        document.getElementById("message-input").value = "";
-                    } else {
-                        alert("Failed to send message: " + response.message);
-                    }
+                if (xhr.status !== 200) {
+                    alert("Failed to send message: " + xhr.statusText);
                 }
             };
             xhr.send("message=" + encodeURIComponent(message) + "&conversation_id=" + conversationId);
         });
 
         document.getElementById("user-search-input").addEventListener("input", function () {
-            var query = this.value;
+            const query = this.value;
             if (query.length > 2) {
                 var xhr = new XMLHttpRequest();
                 xhr.open("GET", "../php/search_users.php?query=" + encodeURIComponent(query), true);
@@ -82,25 +83,8 @@ session_start();
         });
 
         function startConversation(userId) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "../php/start_conversation.php", true);
-            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    var response = JSON.parse(xhr.responseText);
-                    if (response.success) {
-                        loadMessages(response.conversation_id);
-                    } else {
-                        alert("Failed to start conversation: " + response.message);
-                    }
-                } else {
-                    alert("Failed to start conversation: Server error");
-                }
-            };
-            xhr.onerror = function () {
-                alert("Failed to start conversation: Network error");
-            };
-            xhr.send("user_id=" + userId);
+            const conversationId = 'conv_' + userId;
+            loadMessages(conversationId);
         }
     </script>
 </body>
