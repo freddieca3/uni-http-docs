@@ -108,6 +108,15 @@ main {
     justify-content: center;
 }
 
+.feed-container {
+    max-width: 600px;
+    width: 100%;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
 /* Footer */
 footer {
     text-align: center;
@@ -123,8 +132,6 @@ footer {
     padding: 20px;
     margin-bottom: 20px;
     background-color: #fff;
-    max-width: 600px;
-    width: 100%;
 }
 
 .post img {
