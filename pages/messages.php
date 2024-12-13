@@ -93,7 +93,12 @@ session_start();
                     } else {
                         alert("Failed to start conversation: " + response.message);
                     }
+                } else {
+                    alert("Failed to start conversation: Server error");
                 }
+            };
+            xhr.onerror = function () {
+                alert("Failed to start conversation: Network error");
             };
             xhr.send("user_id=" + userId);
         }
