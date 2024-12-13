@@ -14,7 +14,7 @@ include('../includes/db_connection.php');
 </head>
 <body>
     <?php include '../includes/header.php'; ?>
-    <main>
+    <main class="container">
         <h2>Feed</h2>
 
         <?php
