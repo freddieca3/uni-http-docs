@@ -2,11 +2,25 @@
 session_start();
 include('../includes/db_connection.php');
 
+// Check if the user is logged in
+if (!isset($_SESSION['username']) || !isset($_SESSION['user_id'])) {
+    echo json_encode(['success' => false, 'message' => 'Please log in to start a conversation.']);
+    exit();
+}
+
 $user1_id = $_SESSION['user_id'];
 $user2_id = $_POST['user_id'];
 
+// Prevent users from starting a conversation with themselves
+if ($user1_id == $user2_id) {
+    echo json_encode(['success' => false, 'message' => 'Cannot start a conversation with yourself.']);
+    exit();
+}
+
 // Check if a conversation already exists
-$sql = "SELECT conversation_id FROM conversations WHERE (user1_id = ? AND user2_id = ?) OR (user1_id = ? AND user2_id = ?)";
+$sql = "SELECT conversation_id FROM conversations WHERE 
+        (user1_id = ? AND user2_id = ?) OR 
+        (user1_id = ? AND user2_id = ?)";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("iiii", $user1_id, $user2_id, $user2_id, $user1_id);
 $stmt->execute();
@@ -22,10 +36,10 @@ if ($conversation_id) {
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ii", $user1_id, $user2_id);
     if ($stmt->execute()) {
-        $conversation_id = $stmt->insert_id;
-        echo json_encode(['success' => true, 'conversation_id' => $conversation_id]);
+        $new_conversation_id = $stmt->insert_id;
+        echo json_encode(['success' => true, 'conversation_id' => $new_conversation_id]);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to start conversation']);
+        echo json_encode(['success' => false, 'message' => 'Failed to start conversation.']);
     }
     $stmt->close();
 }

@@ -4,7 +4,7 @@ include('../includes/db_connection.php');
 
 // Check if the user is logged in
 if (!isset($_SESSION['username'])) {
-    echo "Please log in to see your messages.";
+    echo json_encode(['success' => false, 'message' => 'Please log in to see your messages.']);
     exit();
 }
 
@@ -15,11 +15,18 @@ $sql = "SELECT sender, message, created_at FROM messages WHERE conversation_id =
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $conversation_id);
 $stmt->execute();
-$stmt->bind_result($sender, $message, $created_at);
+$result = $stmt->get_result();
 
-while ($stmt->fetch()) {
-    echo "<p><strong>" . htmlspecialchars($sender) . ":</strong> " . htmlspecialchars($message) . " <small>(" . htmlspecialchars($created_at) . ")</small></p>";
+$messages = [];
+while ($row = $result->fetch_assoc()) {
+    $messages[] = [
+        'sender' => htmlspecialchars($row['sender']),
+        'message' => htmlspecialchars($row['message']),
+        'created_at' => htmlspecialchars($row['created_at'])
+    ];
 }
+
+echo json_encode(['success' => true, 'messages' => $messages]);
 
 $stmt->close();
 $conn->close();
