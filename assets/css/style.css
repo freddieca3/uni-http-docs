@@ -124,23 +124,8 @@ footer {
     max-width: 600px; /* Set a maximum width for the post container */
 }
 
-/* Center the image within the post and make it bigger */
+/* Center the image within the post */
 .post img {
     display: block;
     margin: 0 auto;
-    max-width: 100%; /* Ensure the image fits within the post container */
-    height: auto; /* Maintain aspect ratio */
-}
-
-/* Like button styles */
-button {
-    background-color: transparent; /* Remove background */
-    color: red; /* Make the like button red */
-    cursor: pointer;
-    border: none; /* Remove border */
-    font-size: 1.2em; /* Increase font size */
-}
-
-button:hover {
-    color: darkred; /* Darker red on hover */
 }
