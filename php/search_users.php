@@ -18,6 +18,6 @@ $stmt->close();
 $conn->close();
 
 foreach ($results as $result) {
-    echo "<div class='search-result' onclick='startConversation(" . htmlspecialchars($result['user_id']) . ")'>" . htmlspecialchars($result['username']) . "</div>";
+    echo "<div class='search-result'><a href='../pages/message_user.php?user_id=" . htmlspecialchars($result['user_id']) . "'>" . htmlspecialchars($result['username']) . "</a></div>";
 }
 ?>
