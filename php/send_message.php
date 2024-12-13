@@ -26,8 +26,15 @@ $stmt = $conn->prepare($sql);
 $stmt->bind_param("iss", $conversation_id, $username, $message);
 
 if ($stmt->execute()) {
-    // Optionally, fetch the inserted message details
-    echo json_encode(['success' => true]);
+    // Fetch the inserted message details
+    $message_id = $stmt->insert_id;
+    $sql = "SELECT sender, message, created_at FROM messages WHERE message_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $message_id);
+    $stmt->execute();
+    $stmt->bind_result($sender, $message, $created_at);
+    $stmt->fetch();
+    echo json_encode(['success' => true, 'message' => ['sender' => $sender, 'message' => $message, 'created_at' => $created_at]]);
 } else {
     echo json_encode(['success' => false, 'message' => 'Failed to send message.']);
 }
