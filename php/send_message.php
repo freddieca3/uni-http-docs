@@ -19,7 +19,11 @@ $conversation_id = $_POST['conversation_id'];
 $sql = "INSERT INTO messages (conversation_id, sender, message, created_at) VALUES (?, ?, ?, NOW())";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("iss", $conversation_id, $username, $message);
-$stmt->execute();
+if ($stmt->execute()) {
+    echo json_encode(['success' => true]);
+} else {
+    echo json_encode(['success' => false, 'message' => 'Failed to send message']);
+}
 $stmt->close();
 
 $conn->close();
