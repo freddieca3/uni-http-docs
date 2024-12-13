@@ -14,7 +14,7 @@ session_start();
 
 <body>
     <?php include '../includes/header.php'; ?>
-    <main>
+    <main class="container">
         <h2>User Management</h2>
         <div id="user-list">
             <?php

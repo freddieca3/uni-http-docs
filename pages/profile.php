@@ -238,7 +238,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 </head>
 <body>
 <?php include '../includes/header.php'; ?>
-    <main>
+    <main class="container">
         <h2>Profile</h2>
         <div class="profile-info">
             <?php if (!empty($profile_picture)) : ?>
