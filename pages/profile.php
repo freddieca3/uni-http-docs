@@ -89,25 +89,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile - Fred's Free Speech</title>
     <link rel="stylesheet" href="../assets/css/style.css">
-    <style>
-        #profile-edit-form, #new-post-form {
-            display: none;
-        }
-        #edit-profile-btn, #create-post-btn {
-            background-color: navy;
-            color: white;
-            padding: 10px;
-            border: none;
-            cursor: pointer;
-        }
-        #edit-profile-btn:hover, #create-post-btn:hover {
-            background-color: darkblue;
-        }
-        #map {
-            height: 400px;
-            width: 100%;
-        }
-    </style> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCZlCp0Zt62EittcZsPueFGo-QRwRDQBcE&libraries=maps,marker&v=beta" defer></script>
@@ -238,7 +219,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 </head>
 <body>
 <?php include '../includes/header.php'; ?>
-    <main>
+    <main class="container">
         <h2>Profile</h2>
         <div class="profile-info">
             <?php if (!empty($profile_picture)) : ?>
