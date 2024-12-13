@@ -19,7 +19,7 @@ body {
 /* Navbar for Logged-In Pages */
 .navbar {
     text-align: center;
-    background-color: #ffffff; /* White background for navbar */
+    background-color: #333; /* White background for navbar */
     padding: 10px;
     position: fixed;
     top: 0;
@@ -30,7 +30,7 @@ body {
 }
 
 .navbar a {
-    color: #333; /* Darker text color for better contrast */
+    color: #000000; /* Darker text color for better contrast */
     margin: 0 10px;
     text-decoration: none;
 }
