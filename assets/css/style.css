@@ -134,29 +134,24 @@ footer {
 
 /* Like button styles */
 .post button {
-    background-color: red; /* Set background color to red */
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 4px;
+    background: none; /* Remove background */
+    border: none; /* Remove border */
+    color: red; /* Set color to red */
     cursor: pointer;
-}
-
-.post button:hover {
-    background-color: darkred; /* Darker red on hover */
+    font-size: 1.2em; /* Increase font size */
 }
 
 /* View more dropdown button styles */
 .toggle-button {
-    background: grey; /* Set background color to grey */
+    background: none;
     border: none;
-    color: white;
+    color: grey; /* Set color to grey */
     cursor: pointer;
-    padding: 10px;
+    padding: 0;
     font-size: 1em;
     text-decoration: none; /* Remove underline */
 }
 
 .toggle-button:hover {
-    background: darkgrey; /* Darker grey on hover */
+    color: darkgrey; /* Change hover color */
 }
