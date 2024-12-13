@@ -23,19 +23,12 @@ $stmt->close();
 
 // Process the uploaded file
 $image = null;
-if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
-    $image_name = basename($_FILES['image']['name']);
+if (isset($_FILES['croppedImage']) && $_FILES['croppedImage']['error'] == 0) {
+    $image_name = uniqid("post_", true) . ".png";
     $image_target = "../uploads/" . $image_name;
 
-    // Check if the file is an image
-    $check = getimagesize($_FILES['image']['tmp_name']);
-    if ($check === false) {
-        echo json_encode(['success' => false, 'message' => 'Uploaded file is not an image.']);
-        exit();
-    }
-
     // Move the file to the uploads directory
-    if (!move_uploaded_file($_FILES['image']['tmp_name'], $image_target)) {
+    if (!move_uploaded_file($_FILES['croppedImage']['tmp_name'], $image_target)) {
         echo json_encode(['success' => false, 'message' => 'Failed to upload image.']);
         exit();
     }

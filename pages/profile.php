@@ -108,6 +108,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             width: 100%;
         }
     </style> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCZlCp0Zt62EittcZsPueFGo-QRwRDQBcE&libraries=maps,marker&v=beta" defer></script>
     <script>
         let map, marker;
@@ -164,23 +166,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             xhr.send();
         }
 
+        let cropper;
+
+        function previewImage(event) {
+            const imagePreviewContainer = document.getElementById('image-preview-container');
+            const imagePreview = document.getElementById('image-preview');
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                imagePreviewContainer.style.display = 'block';
+
+                if (cropper) {
+                    cropper.destroy();
+                }
+
+                cropper = new Cropper(imagePreview, {
+                    aspectRatio: 1, // Adjust aspect ratio as needed
+                    viewMode: 1,
+                    autoCropArea: 1,
+                });
+            };
+
+            reader.readAsDataURL(file);
+        }
+
         function submitPostForm(event) {
             event.preventDefault();
-            var form = document.getElementById("new-post-form");
-            var formData = new FormData(form);
+            const form = document.getElementById('new-post-form');
+            const formData = new FormData(form);
 
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", form.action, true);
-            xhr.onload = function () {
+            if (cropper) {
+                cropper.getCroppedCanvas().toBlob((blob) => {
+                    formData.append('croppedImage', blob, 'croppedImage.png');
+                    sendFormData(formData);
+                });
+            } else {
+                sendFormData(formData);
+            }
+        }
+
+        function sendFormData(formData) {
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '../php/post_processes.php', true);
+            xhr.onload = function() {
                 if (xhr.status === 200) {
-                    var response = JSON.parse(xhr.responseText);
+                    const response = JSON.parse(xhr.responseText);
                     if (response.success) {
-                        alert("Post created successfully!");
-                        form.reset();
-                        toggleNewPostForm();
+                        alert('Post created successfully!');
+                        document.getElementById('new-post-form').reset();
+                        document.getElementById('image-preview-container').style.display = 'none';
                         loadUserPosts();
                     } else {
-                        alert("Failed to create post: " + response.message);
+                        alert('Failed to create post: ' + response.message);
                     }
                 }
             };
@@ -230,7 +269,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             <label for="description">Description:</label>
             <textarea id="description" name="description" rows="4" cols="50" required></textarea>
             <label for="image">Upload Image:</label>
-            <input type="file" id="image" name="image" accept=".jpg, .jpeg, .png">
+            <input type="file" id="image" name="image" accept=".jpg, .jpeg, .png" onchange="previewImage(event)">
+            <div id="image-preview-container" style="display: none;">
+                <img id="image-preview" style="max-width: 100%;">
+            </div>
             <label for="location">Location:</label>
             <input type="text" id="location" name="location" readonly>
             <div id="map"></div>
