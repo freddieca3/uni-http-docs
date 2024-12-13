@@ -1,11 +1,14 @@
 /* General Styles */
 body {
     background-color: #f0f0f0; /* Light grey background */
-    color: #ffffff; /* Darker text color for better contrast */
+    color: #333; /* Darker text color for better contrast */
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 /* Centered Page for Login and Register */
@@ -104,6 +107,24 @@ main {
     background-color: #fff;
     color: #333;
     min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Center page titles */
+main h2 {
+    text-align: center;
+}
+
+/* Center all page contents */
+.profile-info,
+#profile-edit-form,
+#new-post-form,
+#user-posts {
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
 }
 
 /* Footer */
