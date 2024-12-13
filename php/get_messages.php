@@ -8,17 +8,19 @@ if (!isset($_SESSION['username'])) {
     exit();
 }
 
-// Fetch messages from the database
-$sql = "SELECT sender, message, created_at FROM messages ORDER BY created_at ASC";
-$result = $conn->query($sql);
+$conversation_id = $_GET['conversation_id'];
 
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        echo "<p><strong>" . htmlspecialchars($row['sender']) . ":</strong> " . htmlspecialchars($row['message']) . " <small>(" . htmlspecialchars($row['created_at']) . ")</small></p>";
-    }
-} else {
-    echo "<p>No messages available.</p>";
+// Fetch messages from the database
+$sql = "SELECT sender, message, created_at FROM messages WHERE conversation_id = ? ORDER BY created_at ASC";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $conversation_id);
+$stmt->execute();
+$stmt->bind_result($sender, $message, $created_at);
+
+while ($stmt->fetch()) {
+    echo "<p><strong>" . htmlspecialchars($sender) . ":</strong> " . htmlspecialchars($message) . " <small>(" . htmlspecialchars($created_at) . ")</small></p>";
 }
 
+$stmt->close();
 $conn->close();
 ?>

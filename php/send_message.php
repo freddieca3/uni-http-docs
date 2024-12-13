@@ -11,13 +11,14 @@ if (!isset($_SESSION['username'])) {
 // Get the logged-in user's username
 $username = $_SESSION['username'];
 
-// Get the message from the POST request
+// Get the message and conversation ID from the POST request
 $message = trim($_POST['message']);
+$conversation_id = $_POST['conversation_id'];
 
 // Insert the message into the database
-$sql = "INSERT INTO messages (sender, message, created_at) VALUES (?, ?, NOW())";
+$sql = "INSERT INTO messages (conversation_id, sender, message, created_at) VALUES (?, ?, ?, NOW())";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("ss", $username, $message);
+$stmt->bind_param("iss", $conversation_id, $username, $message);
 $stmt->execute();
 $stmt->close();
 
