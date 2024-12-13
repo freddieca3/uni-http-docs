@@ -28,6 +28,7 @@ session_start();
     </footer>
     <script>
 <<<<<<< HEAD
+<<<<<<< HEAD
         function loadMessages(conversationId) {
             if (navigator.onLine) {
                 // Fetch messages from the server
@@ -57,6 +58,8 @@ session_start();
             const chatWindow = document.getElementById("chat-window");
             chatWindow.innerHTML = messages.map(msg => `<p><strong>${msg.sender}:</strong> ${msg.message} <small>(${msg.created_at})</small></p>`).join('');
 =======
+=======
+>>>>>>> parent of c0d6a43 (messages)
         function loadMessages() {
             var xhr = new XMLHttpRequest();
             xhr.open("GET", "../php/get_messages.php", true);
@@ -71,6 +74,7 @@ session_start();
 
         document.getElementById("message-form").addEventListener("submit", function (e) {
             e.preventDefault();
+<<<<<<< HEAD
 <<<<<<< HEAD
             const message = document.getElementById("message-input").value;
             const conversationId = document.getElementById("chat-window").getAttribute("data-conversation-id");
@@ -179,6 +183,23 @@ session_start();
                 sendPendingMessages();
             }
         };
+=======
+            var message = document.getElementById("message-input").value;
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "../php/send_message.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    loadMessages();
+                    document.getElementById("message-input").value = "";
+                }
+            };
+            xhr.send("message=" + encodeURIComponent(message));
+        });
+
+        // Load messages when page loads
+        document.addEventListener("DOMContentLoaded", loadMessages);
+>>>>>>> parent of c0d6a43 (messages)
 =======
             var message = document.getElementById("message-input").value;
             var xhr = new XMLHttpRequest();
