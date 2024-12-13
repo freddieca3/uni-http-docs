@@ -53,8 +53,13 @@ session_start();
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             xhr.onload = function () {
                 if (xhr.status === 200) {
-                    loadMessages(conversationId);
-                    document.getElementById("message-input").value = "";
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.success) {
+                        loadMessages(conversationId);
+                        document.getElementById("message-input").value = "";
+                    } else {
+                        alert("Failed to send message: " + response.message);
+                    }
                 }
             };
             xhr.send("message=" + encodeURIComponent(message) + "&conversation_id=" + conversationId);
