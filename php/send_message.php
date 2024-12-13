@@ -11,9 +11,8 @@ if (!isset($_SESSION['username'])) {
 // Get the logged-in user's username
 $username = $_SESSION['username'];
 
-// Get the message and conversation ID from the POST request
+// Get the message from the POST request
 $message = trim($_POST['message']);
-$conversation_id = $_POST['conversation_id'];
 
 if (empty($message)) {
     echo json_encode(['success' => false, 'message' => 'Message cannot be empty.']);
@@ -21,9 +20,15 @@ if (empty($message)) {
 }
 
 // Insert the message into the database
-$sql = "INSERT INTO messages (conversation_id, sender, message, created_at) VALUES (?, ?, ?, NOW())";
+$sql = "INSERT INTO messages (sender, message, created_at) VALUES (?, ?, NOW())";
 $stmt = $conn->prepare($sql);
+<<<<<<< HEAD
 $stmt->bind_param("iss", $conversation_id, $username, $message);
+=======
+$stmt->bind_param("ss", $username, $message);
+$stmt->execute();
+$stmt->close();
+>>>>>>> parent of c0d6a43 (messages)
 
 if ($stmt->execute()) {
     // Fetch the inserted message details

@@ -15,14 +15,10 @@ session_start();
     <?php include '../includes/header.php'; ?>
     <main class="container">
         <h2>Direct Messages</h2>
-        <div class="search-container">
-            <input type="text" id="user-search-input" placeholder="Search for users...">
-            <div id="search-results"></div>
-        </div>
         <div class="chat-window" id="chat-window">
             <!-- Messages will be loaded here -->
         </div>
-        <form id="message-form" style="display: none;">
+        <form id="message-form">
             <input type="text" id="message-input" placeholder="Type your message..." required>
             <button type="submit">Send</button>
         </form>
@@ -31,6 +27,7 @@ session_start();
         <p>&copy; 2024 Social Media Platform</p>
     </footer>
     <script>
+<<<<<<< HEAD
         function loadMessages(conversationId) {
             if (navigator.onLine) {
                 // Fetch messages from the server
@@ -59,10 +56,22 @@ session_start();
         function displayMessages(messages, conversationId) {
             const chatWindow = document.getElementById("chat-window");
             chatWindow.innerHTML = messages.map(msg => `<p><strong>${msg.sender}:</strong> ${msg.message} <small>(${msg.created_at})</small></p>`).join('');
+=======
+        function loadMessages() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "../php/get_messages.php", true);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    document.getElementById("chat-window").innerHTML = xhr.responseText;
+                }
+            };
+            xhr.send();
+>>>>>>> parent of c0d6a43 (messages)
         }
 
         document.getElementById("message-form").addEventListener("submit", function (e) {
             e.preventDefault();
+<<<<<<< HEAD
             const message = document.getElementById("message-input").value;
             const conversationId = document.getElementById("chat-window").getAttribute("data-conversation-id");
             const timestamp = new Date().toISOString();
@@ -170,6 +179,23 @@ session_start();
                 sendPendingMessages();
             }
         };
+=======
+            var message = document.getElementById("message-input").value;
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "../php/send_message.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    loadMessages();
+                    document.getElementById("message-input").value = "";
+                }
+            };
+            xhr.send("message=" + encodeURIComponent(message));
+        });
+
+        // Load messages when page loads
+        document.addEventListener("DOMContentLoaded", loadMessages);
+>>>>>>> parent of c0d6a43 (messages)
     </script>
 </body>
 </html>
