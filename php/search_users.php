@@ -17,7 +17,5 @@ while ($stmt->fetch()) {
 $stmt->close();
 $conn->close();
 
-foreach ($results as $result) {
-    echo "<div class='search-result'><a href='../pages/message_user.php?user_id=" . htmlspecialchars($result['user_id']) . "'>" . htmlspecialchars($result['username']) . "</a></div>";
-}
+echo json_encode($results);
 ?>

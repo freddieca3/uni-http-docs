@@ -8,10 +8,9 @@ if (!isset($_SESSION['username'])) {
     exit();
 }
 
+$conversation_id = $_GET['conversation_id'];
+
 // Fetch messages from the database
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 $sql = "SELECT sender, message, created_at FROM messages WHERE conversation_id = ? ORDER BY created_at ASC";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $conversation_id);
@@ -30,44 +29,5 @@ while ($row = $result->fetch_assoc()) {
 echo json_encode(['success' => true, 'messages' => $messages]);
 
 $stmt->close();
-=======
-$sql = "SELECT sender, message, created_at FROM messages ORDER BY created_at ASC";
-$result = $conn->query($sql);
-
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        echo "<p><strong>" . htmlspecialchars($row['sender']) . ":</strong> " . htmlspecialchars($row['message']) . " <small>(" . htmlspecialchars($row['created_at']) . ")</small></p>";
-    }
-} else {
-    echo "<p>No messages available.</p>";
-}
-
->>>>>>> parent of c0d6a43 (messages)
-=======
-$sql = "SELECT sender, message, created_at FROM messages ORDER BY created_at ASC";
-$result = $conn->query($sql);
-
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        echo "<p><strong>" . htmlspecialchars($row['sender']) . ":</strong> " . htmlspecialchars($row['message']) . " <small>(" . htmlspecialchars($row['created_at']) . ")</small></p>";
-    }
-} else {
-    echo "<p>No messages available.</p>";
-}
-
->>>>>>> parent of c0d6a43 (messages)
-=======
-$sql = "SELECT sender, message, created_at FROM messages ORDER BY created_at ASC";
-$result = $conn->query($sql);
-
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        echo "<p><strong>" . htmlspecialchars($row['sender']) . ":</strong> " . htmlspecialchars($row['message']) . " <small>(" . htmlspecialchars($row['created_at']) . ")</small></p>";
-    }
-} else {
-    echo "<p>No messages available.</p>";
-}
-
->>>>>>> parent of c0d6a43 (messages)
 $conn->close();
 ?>
