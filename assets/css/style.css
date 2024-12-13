@@ -132,6 +132,13 @@ footer {
     width: 100%; /* Make the image take up the full width of the container */
     height: auto; /* Maintain aspect ratio */
 }
+
+/* Make the image container larger */
+.post .image-container {
+    width: 100%;
+    max-width: 600px; /* Adjust as needed */
+    margin: 0 auto;
+}
 /* Like Button Styles */
 .post button[onclick^='likePost'] {
     background: none;
