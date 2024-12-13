@@ -104,6 +104,8 @@ main {
     background-color: #fff;
     color: #333;
     min-height: 90vh;
+    display: flex;
+    justify-content: center;
 }
 
 /* Footer */
@@ -121,4 +123,13 @@ footer {
     padding: 20px;
     margin-bottom: 20px;
     background-color: #fff;
+    max-width: 600px;
+    width: 100%;
+}
+
+.post img {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    height: auto;
 }
