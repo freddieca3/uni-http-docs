@@ -141,3 +141,11 @@ footer {
 .post button[onclick^='likePost']:hover {
     color: darkred;
 }
+
+/* Center the image within the post and make it larger */
+.post img {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%; /* Ensure the image does not overflow the container */
+    height: auto; /* Maintain aspect ratio */
+}
