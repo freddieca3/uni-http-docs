@@ -14,11 +14,14 @@ $username = $_SESSION['username'];
 // Get the message from the POST request
 $message = trim($_POST['message']);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 if (empty($message)) {
     echo json_encode(['success' => false, 'message' => 'Message cannot be empty.']);
     exit();
 }
+=======
+>>>>>>> parent of c0d6a43 (messages)
 =======
 >>>>>>> parent of c0d6a43 (messages)
 
@@ -27,8 +30,11 @@ $sql = "INSERT INTO messages (sender, message, created_at) VALUES (?, ?, NOW())"
 $stmt = $conn->prepare($sql);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 $stmt->bind_param("iss", $conversation_id, $username, $message);
 =======
+=======
+>>>>>>> parent of c0d6a43 (messages)
 =======
 >>>>>>> parent of c0d6a43 (messages)
 $stmt->bind_param("ss", $username, $message);
