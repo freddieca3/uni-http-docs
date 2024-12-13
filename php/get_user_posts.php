@@ -34,7 +34,9 @@ if ($stmt->num_rows > 0) {
         echo "<p><strong>" . htmlspecialchars($title) . "</strong></p>";
         echo "<p>" . htmlspecialchars($description) . "</p>";
         if ($image) {
-            echo "<img src='../uploads/" . htmlspecialchars($image) . "' alt='Post Image' style='width: 100px; height: 100px;'>";
+            echo "<div class='image-container'>";
+            echo "<img src='../uploads/" . htmlspecialchars($image) . "' alt='Post Image'>";
+            echo "</div>";
         }
         if ($location) {
             echo "<p><strong>Location:</strong> " . htmlspecialchars($location) . "</p>";
