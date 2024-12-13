@@ -5,17 +5,15 @@ session_start();
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Messages - Social Media</title>
     <link rel="stylesheet" href="/assets/css/style.css">
 </head>
-
 <body>
     <?php include '../includes/header.php'; ?>
-    <main>
+    <main class="container">
         <h2>Direct Messages</h2>
         <div class="chat-window" id="chat-window">
             <!-- Messages will be loaded here -->
@@ -59,5 +57,4 @@ session_start();
         document.addEventListener("DOMContentLoaded", loadMessages);
     </script>
 </body>
-
 </html>
