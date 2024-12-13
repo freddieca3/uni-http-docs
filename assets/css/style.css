@@ -122,37 +122,41 @@ footer {
     margin: 20px auto; /* Center the post container */
     background-color: #fff;
     max-width: 600px; /* Set a maximum width for the post container */
-    text-align: center; /* Center-align the content */
 }
 
-/* Center the image within the post and make it the main focus */
+/* Center the image within the post and make it bigger */
 .post img {
     display: block;
-    margin: 0 auto 20px; /* Add margin below the image */
-    max-width: 100%; /* Ensure the image fits within the container */
+    margin: 0 auto;
+    max-width: 100%; /* Ensure the image takes up the full width of the post container */
     height: auto; /* Maintain aspect ratio */
 }
 
 /* Like button styles */
 .post button {
-    background: none; /* Remove background */
-    border: none; /* Remove border */
-    color: red; /* Set text color to red */
-    font-size: 1.5em; /* Increase font size */
-    cursor: pointer; /* Change cursor to pointer */
+    background-color: red; /* Set background color to red */
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
-/* View More dropdown button styles */
+.post button:hover {
+    background-color: darkred; /* Darker red on hover */
+}
+
+/* View more dropdown button styles */
 .toggle-button {
     background: grey; /* Set background color to grey */
-    border: none; /* Remove border */
-    color: white; /* Set text color to white */
-    cursor: pointer; /* Change cursor to pointer */
-    padding: 5px 10px; /* Add padding */
-    font-size: 1em; /* Set font size */
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 10px;
+    font-size: 1em;
     text-decoration: none; /* Remove underline */
 }
 
 .toggle-button:hover {
-    background: darkgrey; /* Change background color on hover */
+    background: darkgrey; /* Darker grey on hover */
 }
