@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
 
     // Retrieve the user data from the database
-    $sql = "SELECT password FROM users WHERE username = ?";
+    $sql = "SELECT user_id, password FROM users WHERE username = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $username);
     $stmt->execute();
@@ -20,13 +20,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Check if the user exists
     if ($stmt->num_rows > 0) {
-        // Fetch the hashed password from the database
-        $stmt->bind_result($hashed_password);
+        // Fetch the user_id and hashed password from the database
+        $stmt->bind_result($user_id, $hashed_password);
         $stmt->fetch();
 
         // Hash the input password and compare it to the stored hashed password
         if (hash('sha512', $password) === $hashed_password) {
             // Password is correct, log the user in
+            $_SESSION['user_id'] = $user_id; // Store user_id in session
             $_SESSION['username'] = $username; // Store username in session
             header("Location: ../pages/home.php?success=1"); // Redirect to home with success flag
             exit();
