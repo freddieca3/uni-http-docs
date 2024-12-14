@@ -2,6 +2,10 @@
 session_start();
 include('../includes/db_connection.php');
 
+// Debugging: Check session variables
+error_log("Session username: " . (isset($_SESSION['username']) ? $_SESSION['username'] : 'Not set'));
+error_log("Session user_id: " . (isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'Not set'));
+
 // Check if the user is logged in
 if (!isset($_SESSION['username']) || !isset($_SESSION['user_id'])) {
     echo json_encode(['success' => false, 'message' => 'Please log in to start a conversation.']);
