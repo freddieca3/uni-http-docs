@@ -61,7 +61,7 @@ include('../../includes/db_connection.php');
 <body>
     <?php include '../../includes/header.php'; ?>
     <main class='container'>
-        <h2>Conversation</h2>
+        <h2>Conversation with <?php echo htmlspecialchars(\$_GET['username']); ?></h2>
         <div class='chat-window' id='chat-window'>
             <!-- Messages will be loaded here -->
         </div>
@@ -169,13 +169,13 @@ include('../../includes/db_connection.php');
         fwrite($index_file, $index_content);
         fclose($index_file);
 
-        echo json_encode(['success' => true, 'chat_id' => $chat_id]);
+        echo json_encode(['success' => true, 'chat_id' => $chat_id, 'username' => $_POST['username']]);
     } else {
         echo json_encode(['success' => false, 'message' => 'Failed to start conversation.']);
     }
     $stmt->close();
 } else {
-    echo json_encode(['success' => true, 'chat_id' => $chat_id]);
+    echo json_encode(['success' => true, 'chat_id' => $chat_id, 'username' => $_POST['username']]);
 }
 
 $conn->close();
