@@ -157,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
         function loadUserPosts() {
             var xhr = new XMLHttpRequest();
-            xhr.open("GET", "../php/get_user_posts.php", true);
+            xhr.open("GET", "../php/get_posts.php?user_id=<?php echo $_SESSION['user_id']; ?>", true);
             xhr.onload = function () {
                 if (xhr.status === 200) {
                     document.getElementById("user-posts").innerHTML = xhr.responseText;
@@ -278,7 +278,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             <div id="map"></div>
             <button type="submit">Create Post</button>
         </form>
-        <div id="user-posts"></div>
+        <div id="user-posts">
+            <?php
+            // Include the get_posts.php file and call the fetchPosts function with the logged-in user's user ID
+            include('../php/get_posts.php');
+            fetchPosts($_SESSION['user_id']);
+            ?>
+        </div>
     </main>
     <footer>
         <p>&copy; 2024 Fred's Free Speech Platform</p>
