@@ -2,33 +2,20 @@
 session_start();
 include('../includes/db_connection.php');
 
-// Check if the user is logged in
-if (!isset($_SESSION['username'])) {
-    echo json_encode(['success' => false, 'message' => 'Please log in to send messages.']);
-    exit();
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $sender_id = $_SESSION['user_id'];
+    $receiver_id = $_POST['receiver_id'];
+    $message_text = $_POST['message_text'];
+
+    $stmt = $conn->prepare("INSERT INTO messages (sender_id, receiver_id, message_text) VALUES (?, ?, ?)");
+    $stmt->bind_param("iis", $sender_id, $receiver_id, $message_text);
+
+    if ($stmt->execute()) {
+        echo json_encode(['success' => true, 'message' => 'Message sent successfully!']);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Error sending message.']);
+    }
+    $stmt->close();
 }
-
-// Get the logged-in user's username
-$username = $_SESSION['username'];
-$chat_id = $_POST['chat_id'];
-$message = trim($_POST['message']);
-
-if (empty($message)) {
-    echo json_encode(['success' => false, 'message' => 'Message cannot be empty.']);
-    exit();
-}
-
-// Insert the message into the database
-$sql = "INSERT INTO messages (chat_id, sender, message, created_at) VALUES (?, ?, ?, NOW())";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("sss", $chat_id, $username, $message);
-
-if ($stmt->execute()) {
-    echo json_encode(['success' => true]);
-} else {
-    echo json_encode(['success' => false, 'message' => 'Failed to send message.']);
-}
-
-$stmt->close();
 $conn->close();
 ?>

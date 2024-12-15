@@ -15,87 +15,54 @@ session_start();
     <?php include '../includes/header.php'; ?>
     <main class="container">
         <h2>Direct Messages</h2>
-        <div>
-            <input type="text" id="user-search-input" placeholder="Search for users...">
-            <div id="search-results"></div>
+        <div id="chat-box">
+            <!-- Messages will be appended here -->
         </div>
-        <div id="conversation-list">
-            <!-- Conversations will be loaded here -->
-        </div>
+        <form id="message-form">
+            <input type="text" id="message-input" placeholder="Type a message" required>
+            <button type="submit">Send</button>
+        </form>
     </main>
     <footer>
         <p>&copy; 2024 Social Media Platform</p>
     </footer>
     <script>
-        function loadConversations() {
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "../php/get_conversations.php", true);
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    var response = JSON.parse(xhr.responseText);
-                    if (response.success) {
-                        displayConversations(response.conversations);
-                    }
-                }
-            };
-            xhr.send();
+        const senderId = <?php echo $_SESSION['user_id']; ?>; // Logged-in user's ID
+        const receiverId = 2; // Replace with the receiver's ID
+
+        // Fetch messages
+        function fetchMessages() {
+            fetch(`../php/get_messages.php?receiver_id=${receiverId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const chatBox = document.getElementById('chat-box');
+                    chatBox.innerHTML = '';
+                    data.forEach(message => {
+                        const messageDiv = document.createElement('div');
+                        messageDiv.textContent = `${message.sender_id === senderId ? 'You' : 'Them'}: ${message.message_text}`;
+                        chatBox.appendChild(messageDiv);
+                    });
+                });
         }
 
-        function displayConversations(conversations) {
-            const conversationList = document.getElementById("conversation-list");
-            conversationList.innerHTML = conversations.map(conv => `<div onclick="openConversation('${conv.chat_id}')">${conv.username}</div>`).join('');
-        }
+        // Send a message
+        document.getElementById('message-form').addEventListener('submit', e => {
+            e.preventDefault();
+            const messageText = document.getElementById('message-input').value;
 
-        function openConversation(chatId) {
-            window.location.href = `/messages/${chatId}/index.php`;
-        }
-
-        document.getElementById("user-search-input").addEventListener("input", function () {
-            const query = this.value;
-            if (query.length > 2) {
-                var xhr = new XMLHttpRequest();
-                xhr.open("GET", "../php/search_users.php?query=" + encodeURIComponent(query), true);
-                xhr.onload = function () {
-                    if (xhr.status === 200) {
-                        const results = JSON.parse(xhr.responseText);
-                        document.getElementById("search-results").innerHTML = results.map(user => `<div onclick="startConversation(${user.user_id})">${user.username}</div>`).join('');
-                    }
-                };
-                xhr.send();
-            } else {
-                document.getElementById("search-results").innerHTML = "";
-            }
+            fetch('../php/send_message.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `receiver_id=${receiverId}&message_text=${messageText}`
+            }).then(response => response.json())
+              .then(() => {
+                  document.getElementById('message-input').value = '';
+                  fetchMessages();
+              });
         });
 
-        function startConversation(userId) {
-            if (navigator.onLine) {
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "../php/start_conversation.php", true);
-                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                xhr.onload = function () {
-                    if (xhr.status === 200) {
-                        var response = JSON.parse(xhr.responseText);
-                        if (response.success) {
-                            openConversation(response.chat_id);
-                        } else {
-                            alert("Failed to start conversation: " + response.message);
-                        }
-                    } else {
-                        alert("Failed to start conversation: Server error");
-                    }
-                };
-                xhr.onerror = function () {
-                    alert("Failed to start conversation: Network error");
-                };
-                xhr.send("user_id=" + userId);
-            } else {
-                alert("You are offline. Cannot start a new conversation.");
-            }
-        }
-
-        window.onload = function() {
-            loadConversations();
-        };
+        // Poll messages every 2 seconds
+        setInterval(fetchMessages, 2000);
     </script>
 </body>
 </html>

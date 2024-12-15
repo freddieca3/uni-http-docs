@@ -2,31 +2,21 @@
 session_start();
 include('../includes/db_connection.php');
 
-// Check if the user is logged in
-if (!isset($_SESSION['username'])) {
-    echo json_encode(['success' => false, 'message' => 'Please log in to see your messages.']);
-    exit();
-}
+$sender_id = $_SESSION['user_id'];
+$receiver_id = $_GET['receiver_id'];
 
-$chat_id = $_GET['chat_id'];
-
-// Fetch messages from the database
-$sql = "SELECT sender, message, created_at FROM messages WHERE chat_id = ? ORDER BY created_at ASC";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $chat_id);
+$stmt = $conn->prepare("SELECT * FROM messages WHERE 
+    (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?) 
+    ORDER BY timestamp ASC");
+$stmt->bind_param("iiii", $sender_id, $receiver_id, $receiver_id, $sender_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
 $messages = [];
 while ($row = $result->fetch_assoc()) {
-    $messages[] = [
-        'sender' => htmlspecialchars($row['sender']),
-        'message' => htmlspecialchars($row['message']),
-        'created_at' => htmlspecialchars($row['created_at'])
-    ];
+    $messages[] = $row;
 }
-
-echo json_encode(['success' => true, 'messages' => $messages]);
+echo json_encode($messages);
 
 $stmt->close();
 $conn->close();
