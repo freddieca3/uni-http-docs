@@ -227,6 +227,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             xhr.send(formData);
         }
 
+        function deletePost(postId) {
+            if (confirm("Are you sure you want to delete this post?")) {
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "../php/delete_post.php", true);
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        alert("Post deleted successfully.");
+                        loadUserPosts();
+                    } else {
+                        alert("Failed to delete post: " + xhr.statusText);
+                    }
+                };
+                xhr.send("post_id=" + postId);
+            }
+        }
+
         // Load posts when page loads
         document.addEventListener("DOMContentLoaded", loadUserPosts);
 
