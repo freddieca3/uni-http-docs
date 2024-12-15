@@ -2,7 +2,7 @@
 session_start(); // Start the session to manage user login state
 
 // Include database connection file
-include '/includes/db_connection.php';
+include 'includes/db_connection.php';
 
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
@@ -31,9 +31,9 @@ $userRole = getUserRole($userId);
 
 // Redirect based on user role
 if ($userRole === 'admin') {
-    header("Location: /pages/admin_login.html");
+    header("Location: pages/admin_login.html");
 } else {
-    header("Location: /pages/login.html");
+    header("Location: pages/login.html");
 }
 exit();
 ?>
