@@ -11,7 +11,7 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 
 // Fetch conversations
-$sql = "SELECT c.chat_id, 
+$sql = "SELECT c.conversation_id, c.chat_id, 
                CASE 
                    WHEN c.user1_id = ? THEN u2.username 
                    ELSE u1.username 
@@ -23,11 +23,11 @@ $sql = "SELECT c.chat_id,
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("iii", $user_id, $user_id, $user_id);
 $stmt->execute();
-$stmt->bind_result($chat_id, $username);
+$stmt->bind_result($conversation_id, $chat_id, $username);
 
 $conversations = [];
 while ($stmt->fetch()) {
-    $conversations[] = ['chat_id' => $chat_id, 'username' => $username];
+    $conversations[] = ['conversation_id' => $conversation_id, 'chat_id' => $chat_id, 'username' => $username];
 }
 $stmt->close();
 $conn->close();

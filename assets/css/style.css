@@ -201,11 +201,11 @@ button {
     width: 50px;
     padding: 5px;
 }
-#search-results div {
+#search-results div, #conversation-list div {
     cursor: pointer;
     padding: 5px;
     border-bottom: 1px solid #ccc;
 }
-#search-results div:hover {
+#search-results div:hover, #conversation-list div:hover {
     background-color: #f0f0f0;
 }

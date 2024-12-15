@@ -19,6 +19,9 @@ session_start();
             <input type="text" id="user-search-input" placeholder="Search for users...">
             <div id="search-results"></div>
         </div>
+        <div id="conversation-list">
+            <!-- Conversations will be loaded here -->
+        </div>
         <div id="chat-box">
             <!-- Messages will be appended here -->
         </div>
@@ -33,6 +36,31 @@ session_start();
     <script>
         const senderId = <?php echo $_SESSION['user_id']; ?>; // Logged-in user's ID
         let conversationId = null; // Will be set when a user is selected
+
+        // Fetch conversations
+        function fetchConversations() {
+            fetch('../php/get_conversations.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const conversationList = document.getElementById('conversation-list');
+                        conversationList.innerHTML = '';
+                        data.conversations.forEach(conv => {
+                            const convDiv = document.createElement('div');
+                            convDiv.textContent = conv.username;
+                            convDiv.addEventListener('click', () => openConversation(conv.conversation_id));
+                            conversationList.appendChild(convDiv);
+                        });
+                    }
+                });
+        }
+
+        // Open a conversation
+        function openConversation(convId) {
+            conversationId = convId;
+            document.getElementById('message-form').style.display = 'block';
+            fetchMessages();
+        }
 
         // Fetch messages
         function fetchMessages() {
@@ -100,6 +128,7 @@ session_start();
                       conversationId = data.conversation_id;
                       document.getElementById('message-form').style.display = 'block';
                       fetchMessages();
+                      fetchConversations(); // Refresh the conversation list
                   } else {
                       alert(data.message);
                   }
@@ -108,6 +137,9 @@ session_start();
 
         // Poll messages every 2 seconds
         setInterval(fetchMessages, 2000);
+
+        // Load conversations on page load
+        document.addEventListener('DOMContentLoaded', fetchConversations);
     </script>
 </body>
 </html>
