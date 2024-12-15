@@ -250,28 +250,3 @@ button:hover {
 #search-results div:hover, #conversation-list div:hover {
     background-color: #f0f0f0;
 }
-
-/* Profile Picture Styles */
-.profile-picture {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 10px;
-    vertical-align: middle;
-}
-
-/* Delete Button Styles */
-.delete-button {
-    background-color: red;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-    border-radius: 4px;
-    margin-left: 10px;
-}
-
-.delete-button:hover {
-    background-color: darkred;
-}
