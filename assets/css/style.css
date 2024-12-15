@@ -252,7 +252,7 @@ button:hover {
 }
 
 /* Profile Picture Styles */
-.profile-picture {
+.post-header .profile-picture {
     width: 5px;
     height: 5px;
     border-radius: 50%;
@@ -275,4 +275,19 @@ button:hover {
 .post-header p {
     margin: 0;
     flex-grow: 1;
+}
+
+/* Delete Button Styles */
+.delete-button {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-left: 10px;
+}
+
+.delete-button:hover {
+    background-color: darkred;
 }
