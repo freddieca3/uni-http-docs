@@ -166,7 +166,17 @@ function deletePost(postId) {
 .post-header {
     display: flex;
     align-items: center;
+    margin-bottom: 10px;
 }
+
+.post-header img {
+    flex-shrink: 0;
+}
+
+.post-header p {
+    margin: 0;
+}
+
 .delete-button {
     background-color: red;
     color: white;
@@ -176,6 +186,7 @@ function deletePost(postId) {
     border-radius: 4px;
     margin-left: 10px;
 }
+
 .delete-button:hover {
     background-color: darkred;
 }
