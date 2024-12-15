@@ -33,10 +33,6 @@ function getUserRole($userId) {
 $userRole = getUserRole($userId);
 
 // Redirect based on user role
-if ($userRole === 'admin') {
-    header("Location: pages/admin_login.html");
-} else {
-    header("Location: pages/login.html");
-}
+header("Location: pages/login.html");
 exit();
 ?>
