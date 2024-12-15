@@ -18,6 +18,9 @@ $userId = $_SESSION['user_id'];
 function getUserRole($userId) {
     global $conn;
     $stmt = $conn->prepare("SELECT role FROM users WHERE id = ?");
+    if ($stmt === false) {
+        die('Prepare failed: ' . htmlspecialchars($conn->error));
+    }
     $stmt->bind_param("i", $userId);
     $stmt->execute();
     $stmt->bind_result($role);
