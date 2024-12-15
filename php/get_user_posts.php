@@ -8,17 +8,8 @@ if (!isset($_SESSION['username'])) {
     exit();
 }
 
-// Get the logged-in user's username
-$username = $_SESSION['username'];
-
-// Fetch the user_id from the database
-$sql = "SELECT user_id FROM users WHERE username = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $username);
-$stmt->execute();
-$stmt->bind_result($user_id);
-$stmt->fetch();
-$stmt->close();
+// Get the logged-in user's user ID
+$user_id = $_SESSION['user_id'];
 
 // Include the get_posts.php file and call the fetchPosts function with the user_id
 include('get_posts.php');
