@@ -15,20 +15,22 @@ session_start();
     <?php include '../includes/header.php'; ?>
     <main class="container">
         <h2>Direct Messages</h2>
-        <div>
+        <div class="search-container">
             <input type="text" id="user-search-input" placeholder="Search for users...">
             <div id="search-results"></div>
         </div>
         <div id="conversation-list">
             <!-- Conversations will be loaded here -->
         </div>
-        <div id="chat-box">
-            <!-- Messages will be appended here -->
+        <div id="chat-container" style="display: none;">
+            <div id="chat-box">
+                <!-- Messages will be appended here -->
+            </div>
+            <form id="message-form">
+                <input type="text" id="message-input" placeholder="Type a message" required>
+                <button type="submit">Send</button>
+            </form>
         </div>
-        <form id="message-form" style="display: none;">
-            <input type="text" id="message-input" placeholder="Type a message" required>
-            <button type="submit">Send</button>
-        </form>
     </main>
     <footer>
         <p>&copy; 2024 Social Media Platform</p>
@@ -58,7 +60,7 @@ session_start();
         // Open a conversation
         function openConversation(convId) {
             conversationId = convId;
-            document.getElementById('message-form').style.display = 'block';
+            document.getElementById('chat-container').style.display = 'block';
             fetchMessages();
         }
 
@@ -126,7 +128,7 @@ session_start();
               .then(data => {
                   if (data.success) {
                       conversationId = data.conversation_id;
-                      document.getElementById('message-form').style.display = 'block';
+                      document.getElementById('chat-container').style.display = 'block';
                       fetchMessages();
                       fetchConversations(); // Refresh the conversation list
                   } else {
