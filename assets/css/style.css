@@ -188,6 +188,7 @@ footer {
 
 .search-container {
     margin-bottom: 20px;
+    width: 100%; /* Ensure search container fills the width */
 }
 
 #user-search-input {
@@ -200,6 +201,7 @@ footer {
 
 #conversation-list {
     margin-bottom: 20px;
+    width: 100%; /* Ensure conversation list fills the width */
 }
 
 #chat-container {
