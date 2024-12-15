@@ -76,7 +76,9 @@ function fetchPosts($user_id = null) {
     $stmt->close();
 }
 
-if (!isset($_GET['user_id'])) {
+if (isset($_GET['user_id'])) {
+    fetchPosts($_GET['user_id']);
+} else {
     fetchPosts();
 }
 ?>

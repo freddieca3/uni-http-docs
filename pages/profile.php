@@ -14,6 +14,7 @@ if (!isset($_SESSION['username'])) {
 
 // Fetch the logged-in user's details
 $username = $_SESSION['username'];
+$user_id = $_SESSION['user_id'];
 
 // Initialize variables for bio, profile picture, and update status
 $bio = '';
@@ -157,7 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
         function loadUserPosts() {
             var xhr = new XMLHttpRequest();
-            xhr.open("GET", "../php/get_posts.php?user_id=<?php echo $_SESSION['user_id']; ?>", true);
+            xhr.open("GET", "../php/get_posts.php?user_id=<?php echo $user_id; ?>", true);
             xhr.onload = function () {
                 if (xhr.status === 200) {
                     document.getElementById("user-posts").innerHTML = xhr.responseText;
@@ -282,7 +283,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             <?php
             // Include the get_posts.php file and call the fetchPosts function with the logged-in user's user ID
             include('../php/get_posts.php');
-            fetchPosts($_SESSION['user_id']);
+            fetchPosts($user_id);
             ?>
         </div>
     </main>
