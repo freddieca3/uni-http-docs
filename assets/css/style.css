@@ -201,3 +201,11 @@ button {
     width: 50px;
     padding: 5px;
 }
+#search-results div {
+    cursor: pointer;
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+}
+#search-results div:hover {
+    background-color: #f0f0f0;
+}
