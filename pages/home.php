@@ -18,8 +18,8 @@ include('../includes/db_connection.php');
         <h2>Feed</h2>
 
         <?php
-        // Include the get_user_posts.php to fetch and display posts
-        include('../php/get_user_posts.php');
+        // Include the get_posts.php to fetch and display all posts
+        include('../php/get_posts.php');
         ?>
     </main>
     <footer>
