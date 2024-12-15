@@ -175,6 +175,7 @@ function deletePost(postId) {
 
 .post-header p {
     margin: 0;
+    flex-grow: 1;
 }
 
 .delete-button {

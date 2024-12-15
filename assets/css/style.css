@@ -274,4 +274,5 @@ button:hover {
 
 .post-header p {
     margin: 0;
+    flex-grow: 1;
 }
