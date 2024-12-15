@@ -22,7 +22,7 @@ session_start();
         <div id="conversation-list">
             <!-- Conversations will be loaded here -->
         </div>
-        <div id="chat-container" style="display: none;">
+        <div id="chat-container">
             <div id="chat-box">
                 <!-- Messages will be appended here -->
             </div>
