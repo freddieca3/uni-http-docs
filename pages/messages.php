@@ -47,7 +47,7 @@ session_start();
         }
 
         function openConversation(chatId) {
-            window.location.href = `../messages/${chatId}/index.php`;
+            window.location.href = `/messages/${chatId}/index.php`;
         }
 
         document.getElementById("user-search-input").addEventListener("input", function () {

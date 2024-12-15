@@ -10,7 +10,7 @@ if (!isset($_SESSION['username'])) {
 
 // Get the logged-in user's username
 $username = $_SESSION['username'];
-$conversation_id = $_POST['conversation_id'];
+$chat_id = $_POST['chat_id'];
 $message = trim($_POST['message']);
 
 if (empty($message)) {
@@ -19,9 +19,9 @@ if (empty($message)) {
 }
 
 // Insert the message into the database
-$sql = "INSERT INTO messages (conversation_id, sender, message, created_at) VALUES (?, ?, ?, NOW())";
+$sql = "INSERT INTO messages (chat_id, sender, message, created_at) VALUES (?, ?, ?, NOW())";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("iss", $conversation_id, $username, $message);
+$stmt->bind_param("sss", $chat_id, $username, $message);
 
 if ($stmt->execute()) {
     echo json_encode(['success' => true]);

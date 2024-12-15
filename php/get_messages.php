@@ -8,12 +8,12 @@ if (!isset($_SESSION['username'])) {
     exit();
 }
 
-$conversation_id = $_GET['conversation_id'];
+$chat_id = $_GET['chat_id'];
 
 // Fetch messages from the database
-$sql = "SELECT sender, message, created_at FROM messages WHERE conversation_id = ? ORDER BY created_at ASC";
+$sql = "SELECT sender, message, created_at FROM messages WHERE chat_id = ? ORDER BY created_at ASC";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $conversation_id);
+$stmt->bind_param("s", $chat_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
