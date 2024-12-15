@@ -6,7 +6,7 @@ function fetchPosts($user_id = null) {
     global $conn;
 
     // Base SQL query to fetch posts
-    $sql = "SELECT p.post_id, p.title, p.description, p.image, p.location, p.created_at, p.likes, p.comments, u.username, p.user_id
+    $sql = "SELECT p.post_id, p.title, p.description, p.image, p.location, p.created_at, p.likes, p.comments, u.username, u.profile_picture, p.user_id
             FROM posts p 
             JOIN users u ON p.user_id = u.user_id";
 

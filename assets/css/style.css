@@ -253,8 +253,8 @@ button:hover {
 
 /* Profile Picture Styles */
 .profile-picture {
-    width: 10px;
-    height: 10px;
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
     object-fit: cover;
     margin-right: 5px;
