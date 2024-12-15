@@ -32,12 +32,12 @@ session_start();
     </footer>
     <script>
         const senderId = <?php echo $_SESSION['user_id']; ?>; // Logged-in user's ID
-        let receiverId = null; // Will be set when a user is selected
+        let conversationId = null; // Will be set when a user is selected
 
         // Fetch messages
         function fetchMessages() {
-            if (receiverId) {
-                fetch(`../php/get_messages.php?receiver_id=${receiverId}`)
+            if (conversationId) {
+                fetch(`../php/get_messages.php?conversation_id=${conversationId}`)
                     .then(response => response.json())
                     .then(data => {
                         const chatBox = document.getElementById('chat-box');
@@ -59,7 +59,7 @@ session_start();
             fetch('../php/send_message.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `receiver_id=${receiverId}&message_text=${messageText}`
+                body: `conversation_id=${conversationId}&message_text=${messageText}`
             }).then(response => response.json())
               .then(() => {
                   document.getElementById('message-input').value = '';
@@ -90,9 +90,20 @@ session_start();
 
         // Start a conversation
         function startConversation(userId, username) {
-            receiverId = userId;
-            document.getElementById('message-form').style.display = 'block';
-            fetchMessages();
+            fetch('../php/start_conversation.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `user_id=${userId}`
+            }).then(response => response.json())
+              .then(data => {
+                  if (data.success) {
+                      conversationId = data.conversation_id;
+                      document.getElementById('message-form').style.display = 'block';
+                      fetchMessages();
+                  } else {
+                      alert(data.message);
+                  }
+              });
         }
 
         // Poll messages every 2 seconds

@@ -2,13 +2,10 @@
 session_start();
 include('../includes/db_connection.php');
 
-$sender_id = $_SESSION['user_id'];
-$receiver_id = $_GET['receiver_id'];
+$conversation_id = $_GET['conversation_id'];
 
-$stmt = $conn->prepare("SELECT * FROM messages WHERE 
-    (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?) 
-    ORDER BY timestamp ASC");
-$stmt->bind_param("iiii", $sender_id, $receiver_id, $receiver_id, $sender_id);
+$stmt = $conn->prepare("SELECT sender_id, message_text, timestamp FROM messages WHERE conversation_id = ? ORDER BY timestamp ASC");
+$stmt->bind_param("i", $conversation_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
