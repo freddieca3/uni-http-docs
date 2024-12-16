@@ -36,6 +36,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $message = "Reported user not found.";
     }
 
+    // Handle blocking functionality
+    if (isset($_POST['block']) && $_POST['block'] === 'block') {
+        $block_username = trim($_POST['block_username']);
+        $sql = "SELECT user_id FROM users WHERE username = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $block_username);
+        $stmt->execute();
+        $stmt->bind_result($block_user_id);
+        $stmt->fetch();
+        $stmt->close();
+
+        if ($block_user_id) {
+            // Insert the block into the blocks table
+            $sql = "INSERT INTO blocks (blocker_id, blocked_id) VALUES (?, ?), (?, ?)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("iiii", $reporter_id, $block_user_id, $block_user_id, $reporter_id);
+            if ($stmt->execute()) {
+                $message = "User blocked successfully.";
+            } else {
+                $message = "Failed to block user: " . $stmt->error;
+            }
+            $stmt->close();
+        } else {
+            $message = "User to block not found.";
+        }
+    }
+
     // Close the database connection
     $conn->close();
 }
@@ -62,6 +89,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <label for="reason">Reason:</label>
             <textarea id="reason" name="reason" rows="4" required></textarea>
             <button type="submit">Submit Report</button>
+        </form>
+        <h2>Block User</h2>
+        <form method="POST" action="report.php">
+            <input type="hidden" name="block" value="block">
+            <label for="block_username">Username to Block:</label>
+            <input type="text" id="block_username" name="block_username" required>
+            <button type="submit">Block User</button>
         </form>
     </main>
     <footer>
