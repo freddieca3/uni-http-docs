@@ -108,23 +108,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCZlCp0Zt62EittcZsPueFGo-QRwRDQBcE&libraries=places" async defer></script>
+    <script src="../assets/js/google-maps.js"></script>
     <script>
-        let autocomplete;
-
-        function initAutocomplete() {
-            const input = document.getElementById('location-search');
-            autocomplete = new google.maps.places.Autocomplete(input);
-            autocomplete.addListener('place_changed', function() {
-                const place = autocomplete.getPlace();
-                if (!place.geometry) {
-                    console.log("No details available for input: '" + place.name + "'");
-                    return;
-                }
-
-                document.getElementById('location').value = place.geometry.location.lat() + ',' + place.geometry.location.lng();
-            });
-        }
-
         function toggleProfileEditForm() {
             var form = document.getElementById("profile-edit-form");
             if (form.style.display === "none" || form.style.display === "") {
@@ -234,7 +219,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         // Load posts when page loads
         document.addEventListener("DOMContentLoaded", function() {
             loadUserPosts();
-            initAutocomplete();
         });
 
         // Display alert if profile was updated
@@ -281,8 +265,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             <div id="image-preview-container" style="display: none;">
                 <img id="image-preview" style="max-width: 100%;">
             </div>
-            <label for="location-search">Search Location:</label>
-            <input type="text" id="location-search" placeholder="Search for a location">
+            <label for="locationSearch">Search Location:</label>
+            <input type="text" class="form-control pac-target-input" id="locationSearch" placeholder="Search location" autocomplete="off">
             <label for="location">Location:</label>
             <input type="text" id="location" name="location" readonly>
             <button type="submit">Create Post</button>
