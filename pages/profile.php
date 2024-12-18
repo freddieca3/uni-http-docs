@@ -111,9 +111,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     </style> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCZlCp0Zt62EittcZsPueFGo-QRwRDQBcE&libraries=maps,marker&v=beta" defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initMap" async defer></script>
     <script>
-        let map, marker;
+        let map, marker, searchBox;
 
         function initMap() {
             map = new google.maps.Map(document.getElementById('map'), {
@@ -121,7 +121,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 zoom: 8
             });
 
-            map.addListener('click', function (event) {
+            const input = document.getElementById('location-search');
+            searchBox = new google.maps.places.SearchBox(input);
+
+            map.addListener('bounds_changed', function() {
+                searchBox.setBounds(map.getBounds());
+            });
+
+            searchBox.addListener('places_changed', function() {
+                const places = searchBox.getPlaces();
+
+                if (places.length == 0) {
+                    return;
+                }
+
+                const place = places[0];
+                if (marker) {
+                    marker.setPosition(place.geometry.location);
+                } else {
+                    marker = new google.maps.Marker({
+                        position: place.geometry.location,
+                        map: map
+                    });
+                }
+                map.setCenter(place.geometry.location);
+                document.getElementById('location').value = place.geometry.location.lat() + ',' + place.geometry.location.lng();
+            });
+
+            map.addListener('click', function(event) {
                 placeMarker(event.latLng);
             });
         }
@@ -291,6 +318,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             <div id="image-preview-container" style="display: none;">
                 <img id="image-preview" style="max-width: 100%;">
             </div>
+            <label for="location-search">Search Location:</label>
+            <input type="text" id="location-search" placeholder="Search for a location">
             <label for="location">Location:</label>
             <input type="text" id="location" name="location" readonly>
             <div id="map"></div>
