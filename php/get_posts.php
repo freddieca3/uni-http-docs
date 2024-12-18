@@ -5,21 +5,6 @@ include('../includes/db_connection.php');
 function fetchPosts($user_id = null) {
     global $conn;
 
-    // Get the logged-in user's ID
-    $current_user_id = $_SESSION['user_id'];
-
-    // Fetch blocked user IDs
-    $blocked_users = [];
-    $sql = "SELECT blocked_id FROM blocks WHERE blocker_id = ? UNION SELECT blocker_id FROM blocks WHERE blocked_id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ii", $current_user_id, $current_user_id);
-    $stmt->execute();
-    $stmt->bind_result($blocked_user_id);
-    while ($stmt->fetch()) {
-        $blocked_users[] = $blocked_user_id;
-    }
-    $stmt->close();
-
     // Base SQL query to fetch posts
     $sql = "SELECT p.post_id, p.title, p.description, p.image, p.location, p.created_at, p.likes, p.comments, u.username, u.profile_picture, p.user_id
             FROM posts p 
@@ -28,12 +13,6 @@ function fetchPosts($user_id = null) {
     // Add condition to filter by user_id if provided
     if ($user_id !== null) {
         $sql .= " WHERE p.user_id = ?";
-    } else {
-        // Exclude posts from blocked users
-        if (!empty($blocked_users)) {
-            $placeholders = implode(',', array_fill(0, count($blocked_users), '?'));
-            $sql .= " WHERE p.user_id NOT IN ($placeholders)";
-        }
     }
 
     $sql .= " ORDER BY p.created_at DESC";
@@ -42,10 +21,6 @@ function fetchPosts($user_id = null) {
 
     if ($user_id !== null) {
         $stmt->bind_param("i", $user_id);
-    } else {
-        if (!empty($blocked_users)) {
-            $stmt->bind_param(str_repeat('i', count($blocked_users)), ...$blocked_users);
-        }
     }
 
     $stmt->execute();
