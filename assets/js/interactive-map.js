@@ -1,10 +1,7 @@
-@workspace make a seperate js file for the google map api.
-
-
-here is an example of one that works:
-
 // Initialize and add the map
 let map;
+let marker;
+let searchBox;
 
 async function initMap() {
   // The location of Uluru
@@ -22,11 +19,54 @@ async function initMap() {
   });
 
   // The marker, positioned at Uluru
-  const marker = new AdvancedMarkerElement({
+  marker = new AdvancedMarkerElement({
     map: map,
     position: position,
     title: "Uluru",
   });
+
+  const input = document.getElementById('location-search');
+  searchBox = new google.maps.places.SearchBox(input);
+
+  map.addListener('bounds_changed', function() {
+    searchBox.setBounds(map.getBounds());
+  });
+
+  searchBox.addListener('places_changed', function() {
+    const places = searchBox.getPlaces();
+
+    if (places.length == 0) {
+      return;
+    }
+
+    const place = places[0];
+    if (marker) {
+      marker.setPosition(place.geometry.location);
+    } else {
+      marker = new google.maps.Marker({
+        position: place.geometry.location,
+        map: map
+      });
+    }
+    map.setCenter(place.geometry.location);
+    document.getElementById('location').value = place.geometry.location.lat() + ',' + place.geometry.location.lng();
+  });
+
+  map.addListener('click', function(event) {
+    placeMarker(event.latLng);
+  });
+}
+
+function placeMarker(location) {
+  if (marker) {
+    marker.setPosition(location);
+  } else {
+    marker = new google.maps.Marker({
+      position: location,
+      map: map
+    });
+  }
+  document.getElementById('location').value = location.lat() + ',' + location.lng();
 }
 
 initMap();

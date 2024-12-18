@@ -112,59 +112,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initMap" async defer></script>
+    <script src="../assets/js/interactive-map.js"></script>
     <script>
-        let map, marker, searchBox;
-
-        function initMap() {
-            map = new google.maps.Map(document.getElementById('map'), {
-                center: { lat: -34.397, lng: 150.644 },
-                zoom: 8
-            });
-
-            const input = document.getElementById('location-search');
-            searchBox = new google.maps.places.SearchBox(input);
-
-            map.addListener('bounds_changed', function() {
-                searchBox.setBounds(map.getBounds());
-            });
-
-            searchBox.addListener('places_changed', function() {
-                const places = searchBox.getPlaces();
-
-                if (places.length == 0) {
-                    return;
-                }
-
-                const place = places[0];
-                if (marker) {
-                    marker.setPosition(place.geometry.location);
-                } else {
-                    marker = new google.maps.Marker({
-                        position: place.geometry.location,
-                        map: map
-                    });
-                }
-                map.setCenter(place.geometry.location);
-                document.getElementById('location').value = place.geometry.location.lat() + ',' + place.geometry.location.lng();
-            });
-
-            map.addListener('click', function(event) {
-                placeMarker(event.latLng);
-            });
-        }
-
-        function placeMarker(location) {
-            if (marker) {
-                marker.setPosition(location);
-            } else {
-                marker = new google.maps.Marker({
-                    position: location,
-                    map: map
-                });
-            }
-            document.getElementById('location').value = location.lat() + ',' + location.lng();
-        }
-
         function toggleProfileEditForm() {
             var form = document.getElementById("profile-edit-form");
             if (form.style.display === "none" || form.style.display === "") {
