@@ -1,3 +1,88 @@
+<?php
+// Start the session
+session_start();
+
+// Include the database connection file
+include('../includes/db_connection.php');
+
+// Check if the user is logged in
+if (!isset($_SESSION['username'])) {
+    // Redirect to login page if not logged in
+    header("Location: login.html");
+    exit();
+}
+
+// Fetch the logged-in user's details
+$username = $_SESSION['username'];
+$user_id = $_SESSION['user_id'];
+
+// Initialize variables for bio, profile picture, and update status
+$bio = '';
+$profile_picture = '';
+
+// Fetch the user's bio and profile picture from the database
+$sql = "SELECT bio, profile_picture FROM users WHERE username = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $username);
+$stmt->execute();
+$stmt->bind_result($bio, $profile_picture);
+$stmt->fetch();
+$stmt->close();
+
+// Check if the form is submitted to update the profile
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_profile') {
+    // Get the updated bio and username from the form
+    $new_bio = trim($_POST['bio']);
+    $new_username = trim($_POST['username']);
+
+    // Update the user's bio and username in the database
+    $sql = "UPDATE users SET bio = ?, username = ? WHERE username = ?";
+    $stmt = $conn->prepare($sql);
+
+    if ($stmt === false) {
+        die('Prepare failed: ' . htmlspecialchars($conn->error));
+    }
+
+    $stmt->bind_param("sss", $new_bio, $new_username, $username);
+    $stmt->execute();
+    $stmt->close();
+
+    // Update the session username
+    $_SESSION['username'] = $new_username;
+
+    // Handle profile picture upload
+    if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === 0) {
+        $profile_picture_name = uniqid("profile_", true) . "." . strtolower(pathinfo($_FILES['profile_picture']['name'], PATHINFO_EXTENSION));
+        $profile_picture_target = "../uploads/" . $profile_picture_name;
+
+        // Check if the file is an image and is either .jpg or .png
+        $file_type = strtolower(pathinfo($profile_picture_target, PATHINFO_EXTENSION));
+        $allowed_types = array('jpg', 'jpeg', 'png');
+        if (in_array($file_type, $allowed_types)) {
+            if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $profile_picture_target)) {
+                // Update the profile picture in the database
+                $sql = "UPDATE users SET profile_picture = ? WHERE username = ?";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("ss", $profile_picture_name, $new_username);
+                $stmt->execute();
+                $stmt->close();
+            } else {
+                echo "Failed to upload the profile picture.";
+            }
+        } else {
+            echo "Only JPG and PNG files are allowed.";
+        }
+    }
+
+    // Set session variable to show alert
+    $_SESSION['profile_updated'] = true;
+
+    // Redirect to avoid form resubmission
+    header("Location: profile.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,12 +104,67 @@
         #edit-profile-btn:hover, #create-post-btn:hover {
             background-color: darkblue;
         }
+        #map {
+            height: 400px;
+            width: 100%;
+        }
     </style> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCZlCp0Zt62EittcZsPueFGo-QRwRDQBcE&libraries=places" async defer></script>
-    <script src="../assets/js/interactive-map.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initMap" async defer></script>
     <script>
+        let map, marker, searchBox;
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: -34.397, lng: 150.644 },
+                zoom: 8
+            });
+
+            const input = document.getElementById('location-search');
+            searchBox = new google.maps.places.SearchBox(input);
+
+            map.addListener('bounds_changed', function() {
+                searchBox.setBounds(map.getBounds());
+            });
+
+            searchBox.addListener('places_changed', function() {
+                const places = searchBox.getPlaces();
+
+                if (places.length == 0) {
+                    return;
+                }
+
+                const place = places[0];
+                if (marker) {
+                    marker.setPosition(place.geometry.location);
+                } else {
+                    marker = new google.maps.Marker({
+                        position: place.geometry.location,
+                        map: map
+                    });
+                }
+                map.setCenter(place.geometry.location);
+                document.getElementById('location').value = place.geometry.location.lat() + ',' + place.geometry.location.lng();
+            });
+
+            map.addListener('click', function(event) {
+                placeMarker(event.latLng);
+            });
+        }
+
+        function placeMarker(location) {
+            if (marker) {
+                marker.setPosition(location);
+            } else {
+                marker = new google.maps.Marker({
+                    position: location,
+                    map: map
+                });
+            }
+            document.getElementById('location').value = location.lat() + ',' + location.lng();
+        }
+
         function toggleProfileEditForm() {
             var form = document.getElementById("profile-edit-form");
             if (form.style.display === "none" || form.style.display === "") {
@@ -132,9 +272,7 @@
         }
 
         // Load posts when page loads
-        document.addEventListener("DOMContentLoaded", function() {
-            loadUserPosts();
-        });
+        document.addEventListener("DOMContentLoaded", loadUserPosts);
 
         // Display alert if profile was updated
         <?php if (isset($_SESSION['profile_updated']) && $_SESSION['profile_updated'] === true): ?>
@@ -180,10 +318,11 @@
             <div id="image-preview-container" style="display: none;">
                 <img id="image-preview" style="max-width: 100%;">
             </div>
-            <label for="locationSearch">Search Location:</label>
-            <input type="text" class="form-control pac-target-input" id="locationSearch" placeholder="Search location" autocomplete="off">
+            <label for="location-search">Search Location:</label>
+            <input type="text" id="location-search" placeholder="Search for a location">
             <label for="location">Location:</label>
             <input type="text" id="location" name="location" readonly>
+            <div id="map"></div>
             <button type="submit">Create Post</button>
         </form>
         <div id="user-posts">
