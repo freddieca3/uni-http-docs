@@ -221,7 +221,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         }
 
         // Load posts when page loads
-        document.addEventListener("DOMContentLoaded", loadUserPosts);
+        document.addEventListener("DOMContentLoaded", function() {
+            loadUserPosts();
+            initMap(); // Ensure initMap is called when the page loads
+        });
 
         // Display alert if profile was updated
         <?php if (isset($_SESSION['profile_updated']) && $_SESSION['profile_updated'] === true): ?>
