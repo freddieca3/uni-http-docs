@@ -111,9 +111,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     </style> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCZlCp0Zt62EittcZsPueFGo-QRwRDQBcE&libraries=places&callback=initMap" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCZlCp0Zt62EittcZsPueFGo-QRwRDQBcE&libraries=places" async defer></script>
     <script>
-        let map, marker, searchBox;
+        let map, marker, autocomplete;
 
         function initMap() {
             map = new google.maps.Map(document.getElementById('map'), {
@@ -122,20 +122,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             });
 
             const input = document.getElementById('location-search');
-            searchBox = new google.maps.places.SearchBox(input);
+            autocomplete = new google.maps.places.Autocomplete(input);
+            autocomplete.bindTo('bounds', map);
 
-            map.addListener('bounds_changed', function() {
-                searchBox.setBounds(map.getBounds());
-            });
-
-            searchBox.addListener('places_changed', function() {
-                const places = searchBox.getPlaces();
-
-                if (places.length == 0) {
+            autocomplete.addListener('place_changed', function() {
+                const place = autocomplete.getPlace();
+                if (!place.geometry) {
                     return;
                 }
 
-                const place = places[0];
+                if (place.geometry.viewport) {
+                    map.fitBounds(place.geometry.viewport);
+                } else {
+                    map.setCenter(place.geometry.location);
+                    map.setZoom(17);
+                }
+
                 if (marker) {
                     marker.setPosition(place.geometry.location);
                 } else {
@@ -144,7 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                         map: map
                     });
                 }
-                map.setCenter(place.geometry.location);
+
                 document.getElementById('location').value = place.geometry.location.lat() + ',' + place.geometry.location.lng();
             });
 
@@ -272,7 +274,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         }
 
         // Load posts when page loads
-        document.addEventListener("DOMContentLoaded", loadUserPosts);
+        document.addEventListener("DOMContentLoaded", function() {
+            loadUserPosts();
+            initMap();
+        });
 
         // Display alert if profile was updated
         <?php if (isset($_SESSION['profile_updated']) && $_SESSION['profile_updated'] === true): ?>
