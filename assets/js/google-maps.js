@@ -1,27 +1,37 @@
-// Initialize and add the map
-let map;
-
-async function initMap() {
-  // The location of Uluru
-  const position = { lat: -25.344, lng: 131.031 };
-  // Request needed libraries.
-  //@ts-ignore
-  const { Map } = await google.maps.importLibrary("maps");
-  const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
-
-  // The map, centered at Uluru
-  map = new Map(document.getElementById("map"), {
+function initMap() {
+  const map = new google.maps.Map(document.getElementById('map'), {
+    center: { lat: -25.344, lng: 131.031 },
     zoom: 4,
-    center: position,
-    mapId: "DEMO_MAP_ID",
   });
 
-  // The marker, positioned at Uluru
-  const marker = new AdvancedMarkerElement({
+  const marker = new google.maps.Marker({
+    position: { lat: -25.344, lng: 131.031 },
     map: map,
-    position: position,
-    title: "Uluru",
+    title: 'Uluru',
+  });
+
+  const input = document.getElementById('location-search');
+  const searchBox = new google.maps.places.SearchBox(input);
+
+  map.addListener('bounds_changed', function() {
+    searchBox.setBounds(map.getBounds());
+  });
+
+  searchBox.addListener('places_changed', function() {
+    const places = searchBox.getPlaces();
+
+    if (places.length == 0) {
+      return;
+    }
+
+    const place = places[0];
+    marker.setPosition(place.geometry.location);
+    map.setCenter(place.geometry.location);
+    document.getElementById('location').value = place.geometry.location.lat() + ',' + place.geometry.location.lng();
+  });
+
+  map.addListener('click', function(event) {
+    marker.setPosition(event.latLng);
+    document.getElementById('location').value = event.latLng.lat() + ',' + event.latLng.lng();
   });
 }
-
-initMap();
