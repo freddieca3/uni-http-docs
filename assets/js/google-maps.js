@@ -35,3 +35,6 @@ function initMap() {
     document.getElementById('location').value = event.latLng.lat() + ',' + event.latLng.lng();
   });
 }
+
+// Ensure initMap is globally accessible
+window.initMap = initMap;
