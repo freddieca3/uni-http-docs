@@ -104,27 +104,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         #edit-profile-btn:hover, #create-post-btn:hover {
             background-color: darkblue;
         }
-        #map {
-            height: 400px;
-            width: 100%;
-        }
     </style> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCZlCp0Zt62EittcZsPueFGo-QRwRDQBcE&libraries=places&callback=initMap" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCZlCp0Zt62EittcZsPueFGo-QRwRDQBcE&libraries=places" async defer></script>
     <script>
-        let map, marker, autocomplete;
+        let autocomplete;
 
-        function initMap() {
-            map = new google.maps.Map(document.getElementById('map'), {
-                center: { lat: -34.397, lng: 150.644 },
-                zoom: 8
-            });
-
+        function initAutocomplete() {
             const input = document.getElementById('location-search');
             autocomplete = new google.maps.places.Autocomplete(input);
-            autocomplete.bindTo('bounds', map);
-
             autocomplete.addListener('place_changed', function() {
                 const place = autocomplete.getPlace();
                 if (!place.geometry) {
@@ -132,40 +121,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                     return;
                 }
 
-                if (place.geometry.viewport) {
-                    map.fitBounds(place.geometry.viewport);
-                } else {
-                    map.setCenter(place.geometry.location);
-                    map.setZoom(17);
-                }
-
-                if (marker) {
-                    marker.setPosition(place.geometry.location);
-                } else {
-                    marker = new google.maps.Marker({
-                        position: place.geometry.location,
-                        map: map
-                    });
-                }
-
                 document.getElementById('location').value = place.geometry.location.lat() + ',' + place.geometry.location.lng();
             });
-
-            map.addListener('click', function(event) {
-                placeMarker(event.latLng);
-            });
-        }
-
-        function placeMarker(location) {
-            if (marker) {
-                marker.setPosition(location);
-            } else {
-                marker = new google.maps.Marker({
-                    position: location,
-                    map: map
-                });
-            }
-            document.getElementById('location').value = location.lat() + ',' + location.lng();
         }
 
         function toggleProfileEditForm() {
@@ -277,7 +234,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         // Load posts when page loads
         document.addEventListener("DOMContentLoaded", function() {
             loadUserPosts();
-            initMap();
+            initAutocomplete();
         });
 
         // Display alert if profile was updated
@@ -328,7 +285,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             <input type="text" id="location-search" placeholder="Search for a location">
             <label for="location">Location:</label>
             <input type="text" id="location" name="location" readonly>
-            <div id="map"></div>
             <button type="submit">Create Post</button>
         </form>
         <div id="user-posts">
