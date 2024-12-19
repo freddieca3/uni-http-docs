@@ -14,23 +14,6 @@ if (!isset($_SESSION['user_id'])) {
 // User is logged in; check user role from the database
 $userId = $_SESSION['user_id'];
 
-// Function to get user role
-function getUserRole($userId) {
-    global $conn;
-    $stmt = $conn->prepare("SELECT role FROM users WHERE id = ?");
-    if ($stmt === false) {
-        die('Prepare failed: ' . htmlspecialchars($conn->error));
-    }
-    $stmt->bind_param("i", $userId);
-    $stmt->execute();
-    $stmt->bind_result($role);
-    $stmt->fetch();
-    $stmt->close();
-    return $role;
-}
-
-// Get user role
-$userRole = getUserRole($userId);
 
 // Redirect based on user role
 header("Location: pages/login.html");
