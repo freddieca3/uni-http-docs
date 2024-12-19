@@ -5,14 +5,14 @@ include('../includes/db_connection.php');
 function fetchPosts($user_id = null) {
     global $conn;
 
-    // Base SQL query to fetch posts
+    // base SQL query to fetch posts, joining with users and checking for blocks
     $sql = "SELECT p.post_id, p.title, p.description, p.image, p.location, p.created_at, p.likes, p.comments, u.username, u.profile_picture, p.user_id
             FROM posts p 
             JOIN users u ON p.user_id = u.user_id
             LEFT JOIN blocks b ON (b.blocker_id = ? AND b.blocked_id = p.user_id) OR (b.blocker_id = p.user_id AND b.blocked_id = ?)
             WHERE b.blocker_id IS NULL";
 
-    // Add condition to filter by user_id if provided
+    // add condition to filter by user_id if provided
     if ($user_id !== null) {
         $sql .= " AND p.user_id = ?";
     }
@@ -21,6 +21,7 @@ function fetchPosts($user_id = null) {
 
     $stmt = $conn->prepare($sql);
 
+    // bind parameters based on whether user_id is provided
     if ($user_id !== null) {
         $stmt->bind_param("iii", $_SESSION['user_id'], $_SESSION['user_id'], $user_id);
     } else {
@@ -52,16 +53,16 @@ function fetchPosts($user_id = null) {
             }
             echo "<p><small>Posted on: " . htmlspecialchars($row['created_at']) . "</small></p>";
 
-            // Like button
+            // like button with post ID
             echo "<button onclick='likePost(" . htmlspecialchars($row['post_id']) . ")'>&#x2764;</button>";
             echo "<span id='like-count-" . htmlspecialchars($row['post_id']) . "'>" . htmlspecialchars($row['likes']) . "</span> Likes";
 
-            // Delete button for the logged-in user's posts
+            // delete button for logged-in user's posts
             if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $row['user_id']) {
                 echo "<button class='delete-button' onclick='deletePost(" . htmlspecialchars($row['post_id']) . ")'>Delete</button>";
             }
 
-            // Comment section
+            // comment section with toggle for more comments
             $comments = json_decode($row['comments'], true);
             echo "<div class='comments' id='comments-" . htmlspecialchars($row['post_id']) . "'>";
             if ($comments) {
@@ -92,6 +93,7 @@ function fetchPosts($user_id = null) {
     $stmt->close();
 }
 
+// fetch posts based on user_id if provided
 if (isset($_GET['user_id'])) {
     fetchPosts($_GET['user_id']);
 } else {

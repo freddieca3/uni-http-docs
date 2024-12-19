@@ -1,26 +1,25 @@
 <?php
-// Start the session
+// start session
 session_start();
 
-// Include the database connection file
+// include database connection
 include('../includes/db_connection.php');
 
-// Check if the user is logged in
+// check if user is logged in
 if (!isset($_SESSION['username'])) {
-    // Redirect to login page if not logged in
     header("Location: login.html");
     exit();
 }
 
-// Fetch the logged-in user's details
+// fetch logged-in user's details
 $username = $_SESSION['username'];
 $user_id = $_SESSION['user_id'];
 
-// Initialize variables for bio, profile picture, and update status
+// initialize variables for bio, profile picture, and update status
 $bio = '';
 $profile_picture = '';
 
-// Fetch the user's bio and profile picture from the database
+// fetch user's bio and profile picture from database
 $sql = "SELECT bio, profile_picture FROM users WHERE username = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $username);
@@ -29,13 +28,13 @@ $stmt->bind_result($bio, $profile_picture);
 $stmt->fetch();
 $stmt->close();
 
-// Check if the form is submitted to update the profile
+// check if form is submitted to update profile
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_profile') {
-    // Get the updated bio and username from the form
+    // get updated bio and username from form
     $new_bio = trim($_POST['bio']);
     $new_username = trim($_POST['username']);
 
-    // Update the user's bio and username in the database
+    // update user's bio and username in database
     $sql = "UPDATE users SET bio = ?, username = ? WHERE username = ?";
     $stmt = $conn->prepare($sql);
 
@@ -47,37 +46,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $stmt->execute();
     $stmt->close();
 
-    // Update the session username
+    // update session username
     $_SESSION['username'] = $new_username;
 
-    // Handle profile picture upload
+    // handle profile picture upload
     if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === 0) {
         $profile_picture_name = uniqid("profile_", true) . "." . strtolower(pathinfo($_FILES['profile_picture']['name'], PATHINFO_EXTENSION));
         $profile_picture_target = "../uploads/" . $profile_picture_name;
 
-        // Check if the file is an image and is either .jpg or .png
+        // check if file is an image and is either .jpg or .png
         $file_type = strtolower(pathinfo($profile_picture_target, PATHINFO_EXTENSION));
         $allowed_types = array('jpg', 'jpeg', 'png');
         if (in_array($file_type, $allowed_types)) {
             if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $profile_picture_target)) {
-                // Update the profile picture in the database
+                // update profile picture in database
                 $sql = "UPDATE users SET profile_picture = ? WHERE username = ?";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("ss", $profile_picture_name, $new_username);
                 $stmt->execute();
                 $stmt->close();
             } else {
-                echo "Failed to upload the profile picture.";
+                echo "Failed to upload profile picture.";
             }
         } else {
             echo "Only JPG and PNG files are allowed.";
         }
     }
 
-    // Set session variable to show alert
+    // set session variable to show alert
     $_SESSION['profile_updated'] = true;
 
-    // Redirect to avoid form resubmission
+    // redirect to avoid form resubmission
     header("Location: profile.php");
     exit();
 }
@@ -114,6 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCZlCp0Zt62EittcZsPueFGo-QRwRDQBcE&libraries=places&callback=initMap" async defer></script>
     <script src="../assets/js/google-maps.js"></script>
     <script>
+        // toggle profile edit form visibility
         function toggleProfileEditForm() {
             var form = document.getElementById("profile-edit-form");
             if (form.style.display === "none" || form.style.display === "") {
@@ -123,6 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             }
         }
 
+        // toggle new post form visibility
         function toggleNewPostForm() {
             var form = document.getElementById("new-post-form");
             if (form.style.display === "none" || form.style.display === "") {
@@ -132,6 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             }
         }
 
+        // load user posts via AJAX
         function loadUserPosts() {
             var xhr = new XMLHttpRequest();
             xhr.open("GET", "../php/get_posts.php?user_id=<?php echo $user_id; ?>", true);
@@ -145,6 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
         let cropper;
 
+        // preview and crop image before upload
         function previewImage(event) {
             const imagePreviewContainer = document.getElementById('image-preview-container');
             const imagePreview = document.getElementById('image-preview');
@@ -160,7 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 }
 
                 cropper = new Cropper(imagePreview, {
-                    aspectRatio: 1, // Adjust aspect ratio as needed
+                    aspectRatio: 1, // adjust aspect ratio as needed
                     viewMode: 1,
                     autoCropArea: 1,
                 });
@@ -169,6 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             reader.readAsDataURL(file);
         }
 
+        // handle new post form submission
         function submitPostForm(event) {
             event.preventDefault();
             const form = document.getElementById('new-post-form');
@@ -184,6 +188,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             }
         }
 
+        // send form data via AJAX
         function sendFormData(formData) {
             const xhr = new XMLHttpRequest();
             xhr.open('POST', '../php/post_processes.php', true);
@@ -203,6 +208,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             xhr.send(formData);
         }
 
+        // delete post via AJAX
         function deletePost(postId) {
             if (confirm("Are you sure you want to delete this post?")) {
                 var xhr = new XMLHttpRequest();
@@ -220,12 +226,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             }
         }
 
-        // Load posts when page loads
+        // load posts when page loads
         document.addEventListener("DOMContentLoaded", function() {
             loadUserPosts();
         });
 
-        // Display alert if profile was updated
+        // display alert if profile was updated
         <?php if (isset($_SESSION['profile_updated']) && $_SESSION['profile_updated'] === true): ?>
             alert("Profile updated successfully!");
             <?php unset($_SESSION['profile_updated']); ?>
@@ -278,7 +284,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         </form>
         <div id="user-posts">
             <?php
-            // Include the get_posts.php file and call the fetchPosts function with the logged-in user's user ID
+            // include get_posts.php and call fetchPosts function with logged-in user's user ID
             include('../php/get_posts.php');
             fetchPosts($user_id);
             ?>

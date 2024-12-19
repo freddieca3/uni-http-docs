@@ -72,6 +72,7 @@ session_start();
         <p>&copy; 2024 Social Media Platform</p>
     </footer>
     <script>
+        // load reports dynamically on page load
         function loadReports() {
             var xhr = new XMLHttpRequest();
             xhr.open("GET", "../php/get_reports.php", true);
@@ -83,6 +84,7 @@ session_start();
             xhr.send();
         }
 
+        // remove user with confirmation
         function removeUser(userId) {
             if (confirm("Are you sure you want to remove this user?")) {
                 var xhr = new XMLHttpRequest();
@@ -103,6 +105,7 @@ session_start();
             }
         }
 
+        // prompt for new password and change it
         function changePassword(userId) {
             var newPassword = prompt("Enter the new password:");
             if (newPassword) {
@@ -123,6 +126,7 @@ session_start();
             }
         }
 
+        // load reports when DOM is ready
         document.addEventListener("DOMContentLoaded", loadReports);
     </script>
 </body>
