@@ -8,11 +8,13 @@ function fetchPosts($user_id = null) {
     // Base SQL query to fetch posts
     $sql = "SELECT p.post_id, p.title, p.description, p.image, p.location, p.created_at, p.likes, p.comments, u.username, u.profile_picture, p.user_id
             FROM posts p 
-            JOIN users u ON p.user_id = u.user_id";
+            JOIN users u ON p.user_id = u.user_id
+            LEFT JOIN blocks b ON (b.blocker_id = ? AND b.blocked_id = p.user_id) OR (b.blocker_id = p.user_id AND b.blocked_id = ?)
+            WHERE b.blocker_id IS NULL";
 
     // Add condition to filter by user_id if provided
     if ($user_id !== null) {
-        $sql .= " WHERE p.user_id = ?";
+        $sql .= " AND p.user_id = ?";
     }
 
     $sql .= " ORDER BY p.created_at DESC";
@@ -20,7 +22,9 @@ function fetchPosts($user_id = null) {
     $stmt = $conn->prepare($sql);
 
     if ($user_id !== null) {
-        $stmt->bind_param("i", $user_id);
+        $stmt->bind_param("iii", $_SESSION['user_id'], $_SESSION['user_id'], $user_id);
+    } else {
+        $stmt->bind_param("ii", $_SESSION['user_id'], $_SESSION['user_id']);
     }
 
     $stmt->execute();

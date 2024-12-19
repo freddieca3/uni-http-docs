@@ -19,9 +19,10 @@ $sql = "SELECT c.conversation_id, c.chat_id,
         FROM conversations c
         JOIN users u1 ON c.user1_id = u1.user_id
         JOIN users u2 ON c.user2_id = u2.user_id
-        WHERE c.user1_id = ? OR c.user2_id = ?";
+        LEFT JOIN blocks b ON (b.blocker_id = ? AND b.blocked_id = c.user1_id) OR (b.blocker_id = ? AND b.blocked_id = c.user2_id)
+        WHERE (c.user1_id = ? OR c.user2_id = ?) AND b.blocker_id IS NULL";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("iii", $user_id, $user_id, $user_id);
+$stmt->bind_param("iiiii", $user_id, $user_id, $user_id, $user_id, $user_id);
 $stmt->execute();
 $stmt->bind_result($conversation_id, $chat_id, $username);
 
