@@ -50,6 +50,21 @@ function fetchPosts($user_id = null) {
             }
             if ($row['location']) {
                 echo "<p><strong>Location:</strong> " . htmlspecialchars($row['location']) . "</p>";
+                echo "<div id='map-" . htmlspecialchars($row['post_id']) . "' class='post-map' style='width: 100%; height: 300px;'></div>";
+                echo "<script>
+                        function initMap() {
+                            var location = {lat: " . explode(',', htmlspecialchars($row['location']))[0] . ", lng: " . explode(',', htmlspecialchars($row['location']))[1] . "};
+                            var map = new google.maps.Map(document.getElementById('map-" . htmlspecialchars($row['post_id']) . "'), {
+                                zoom: 12,
+                                center: location
+                            });
+                            var marker = new google.maps.Marker({
+                                position: location,
+                                map: map
+                            });
+                        }
+                        google.maps.event.addDomListener(window, 'load', initMap);
+                      </script>";
             }
             echo "<p><small>Posted on: " . htmlspecialchars($row['created_at']) . "</small></p>";
 
@@ -100,6 +115,7 @@ if (isset($_GET['user_id'])) {
     fetchPosts();
 }
 ?>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCZlCp0Zt62EittcZsPueFGo-QRwRDQBcE&libraries=places&callback=initMap" async defer></script>
 <script>
 function likePost(postId) {
     var xhr = new XMLHttpRequest();
